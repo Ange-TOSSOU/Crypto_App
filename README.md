@@ -2,6 +2,20 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.17.
 
+## Launch the project in local
+- First, you need to retrieve the code. Type the following command:
+```bash
+git clone https://github.com/Ange-TOSSOU/Crypto_App.git
+```
+- Then, download the dependencies needed:
+```bash
+npm run start
+```
+- Finally, start the application in local by using the command:
+```bash
+ng serve
+```
+
 ## Development server
 
 To start a local development server, run:
