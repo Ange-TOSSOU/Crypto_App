@@ -1,17 +1,11 @@
 <app-header></app-header>
-
-<div *ngIf="loading">Chargement...</div>
-<div *ngIf="error">Erreur de chargement.</div>
-
-<div class="crypto-list" *ngIf="!loading && cryptos.length">
-
-  <div class="crypto-card" *ngFor="let c of cryptos">
-    <img [src]="c.logo" width="40" />
-    <h3>{{ c.name }} ({{ c.symbol }})</h3>
-    <p>Prix : ${{ c.price }}</p>
-    <p [style.color]="c.change24h >= 0 ? 'green' : 'red'">
-      {{ c.change24h | number: '1.2-2' }} %
-    </p>
-  </div>
-
+<div class="w-full px-6">
+    <div class="flex w-full items-center overflow-hidden cryptos-list py-2">
+    <ng-container *ngFor="let item of cryptos">
+        <div class="flex items-center gap-2">
+            <app-crypto-card [crypto]="item" ></app-crypto-card> 
+            <span class="mr-2" style="color: #CCCCCC">|</span>
+        </div>
+    </ng-container>
+</div>
 </div>
