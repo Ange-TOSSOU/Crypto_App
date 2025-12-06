@@ -4,6 +4,7 @@ import {
   browserSessionPersistence,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  sendEmailVerification ,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -29,8 +30,12 @@ export class AuthService {
       this.firebaseAuth,
       email,
       password
-    ).then(() => {
-      //
+    ).then(async (cred) => {
+      if (cred.user) {
+        await sendEmailVerification(cred.user);
+      }
+
+      return cred;
     });
     return from(promise);
   }
