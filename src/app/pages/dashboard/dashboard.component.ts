@@ -4,10 +4,11 @@ import { CryptoCardComponent } from "./crypto-card/crypto-card.component";
 import { CryptoCard } from '../../shared/models/crypto-card';
 import { CommonModule } from '@angular/common';
 import { GrapheComponent } from "./graphe/graphe.component";
+import { TopCryptosComponent } from "./top-cryptos/top-cryptos.component";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, HeaderComponent, CryptoCardComponent, GrapheComponent],
+  imports: [CommonModule, HeaderComponent, CryptoCardComponent, GrapheComponent, TopCryptosComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

@@ -15,19 +15,22 @@
         <div class="title">
             <span class="text-xs">Bitcoin</span>
             <div class="flex gap-1 items-center">
-            <p class="font-bold text-2xl"> {{79000 | currency}} </p>
-            <div class="px-2 rounded-xs flex items-center" style="background-color: #75F7C7;">
-                <span style="color: #16D496;">5%</span>
+                <p class="font-bold text-2xl"> {{79000 | currency}} </p>
+                <div class="px-2 rounded-xs flex items-center" style="background-color: #75F7C7;">
+                    <span style="color: #16D496;">5%</span>
+                </div>
+            </div>
+        </div>
+        <div class="w-full flex gap-5">
+            <div class="w-3/4 p-3 bg-white" style="border: 1px solid #CCCC;">
+                <app-graphe [chartData]="mockChartData"></app-graphe>
+            </div>
+            <div class="w-1/4 bg-white" style="border: 1px solid #CCCC;">
+
             </div>
         </div>
     </div>
-    <div class="w-full flex gap-5" >
-        <div class="w-3/4 p-3 bg-white" style="border: 1px solid #CCCC;">
-            <app-graphe [chartData]="mockChartData"></app-graphe>
-        </div>
-        <div class="w-1/4 bg-white" style="border: 1px solid #CCCC;">
-            
-        </div>
+    <div class="px-6">
+        <app-top-cryptos></app-top-cryptos>
     </div>
-</div>
 </div>

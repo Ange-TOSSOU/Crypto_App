@@ -1,1 +1,31 @@
-<p>top-cryptos works!</p>
+<div class="bg-white">
+    <span>TOP 100</span>
+    <table class="w-3/4">
+        <thead>
+            <tr>
+                <th>CRYPTO</th>
+                <th>PRIX(EURO)</th>
+                <th>24H</th>
+                <th>CAPITALISATION(EUR)</th>
+                <th>VOLUME(24H)</th>
+                <th>7J</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of cryptos">
+                <tr>
+                    <td> {{item.name}}</td>
+                    <td> {{item.price | number:'1.0-2'}}</td>
+                    <td> {{item.change24h  | number:'1.2-2' }}</td>
+                    <td> {{item.marketCap | shortNumber}} </td>
+                    <td> {{item.volume | shortNumber}} </td>
+                    <!-- <td> {{item.change7d}} </td> -->
+                    <td *ngIf="item.change7d > 0">Up</td>
+                    <td *ngIf="item.change7d < 0">Down</td>
+                </tr>
+            </ng-container>
+        </tbody>
+            
+    </table>
+    
+</div>
