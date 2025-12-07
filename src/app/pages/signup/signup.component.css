@@ -2,7 +2,7 @@ input, button {
   all: revert;
 }
 
-.login-container {
+.signup-container {
   max-width: 380px;
   margin: 40px auto;
   padding: 20px;
@@ -42,12 +42,7 @@ input, button {
   margin-bottom: 12px;
 }
 
-.links {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.links a {
-  color: #2563eb;
-  cursor: pointer;
+.success {
+  color: #16a34a;
+  margin-bottom: 12px;
 }

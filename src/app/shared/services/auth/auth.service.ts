@@ -10,6 +10,7 @@ import {
   signOut,
   user,
   User,
+  UserCredential
 } from '@angular/fire/auth';
 import { setPersistence } from 'firebase/auth';
 import { from, Observable } from 'rxjs';
@@ -22,9 +23,11 @@ export class AuthService {
     this.setSessionStoragePersistence();
     this.user$ = user(this.firebaseAuth);
   }
+
   private setSessionStoragePersistence(): void {
     setPersistence(this.firebaseAuth, browserSessionPersistence);
   }
+
   signUp(email: string, password: string) {
     const promise = createUserWithEmailAndPassword(
       this.firebaseAuth,
@@ -39,22 +42,19 @@ export class AuthService {
     });
     return from(promise);
   }
-  login(email: string, password: string): Observable<void> {
-    const promise = signInWithEmailAndPassword(
-      this.firebaseAuth,
-      email,
-      password
-    ).then(() => {
-      //
-    });
+
+  login(email: string, password: string): Observable<UserCredential> {
+    const promise: Promise<UserCredential> = signInWithEmailAndPassword(this.firebaseAuth, email, password);
     return from(promise);
   }
+
   logout(): Observable<void> {
     const promise = signOut(this.firebaseAuth).then(() => {
       sessionStorage.clear();
     });
     return from(promise);
   }
+  
   isAuthenticated(): boolean {
     return !!localStorage.getItem('token');
   }

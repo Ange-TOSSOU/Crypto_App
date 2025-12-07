@@ -1,6 +1,8 @@
-<div class="login-container">
+<div class="signup-container">
 
-  <h2>Connexion</h2>
+  <h2>Créer un compte</h2>
+
+  <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
 
   <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
 
@@ -22,18 +24,13 @@
       name="password"
       [(ngModel)]="password"
       required
+      minlength="6"
       class="input"
     />
 
     <button type="submit" [disabled]="f.invalid || loading" class="btn">
-      {{ loading ? "Connexion..." : "Se connecter" }}
+      {{ loading ? 'Création...' : 'Créer le compte' }}
     </button>
   </form>
-
-  <div class="links">
-    <a routerLink="/signup">Créer un compte</a>
-    <br />
-    <a routerLink="/forgot-password">Mot de passe oublié ?</a>
-  </div>
 
 </div>

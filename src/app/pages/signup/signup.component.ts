@@ -2,44 +2,37 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../shared/services/auth/auth.service';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-signin',
+  selector: 'app-signup',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  templateUrl: './signin.component.html',
-  styleUrls: ['./signin.component.css']
+  templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.css']
 })
-export class SigninComponent {
+export class SignupComponent {
 
   email = '';
   password = '';
 
   errorMessage = '';
+  successMessage = '';
+
   loading = false;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService) {}
 
   onSubmit(form: any) {
     if (form.invalid) return;
 
     this.errorMessage = '';
+    this.successMessage = '';
     this.loading = true;
 
-    this.authService.login(this.email, this.password).subscribe({
-      next: (cred) => {
+    this.authService.signUp(this.email, this.password).subscribe({
+      next: () => {
         this.loading = false;
-
-        if (!cred.user.emailVerified) {
-          this.errorMessage = "Votre email n'est pas vérifié. Consultez votre boîte mail.";
-          return;
-        }
-
-        this.router.navigate(['/dashboard']);
+        this.successMessage = 'Compte créé ! Un email de vérification a été envoyé.';
       },
       error: (err) => {
         this.loading = false;
