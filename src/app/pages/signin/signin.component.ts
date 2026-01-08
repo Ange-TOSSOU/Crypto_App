@@ -1,50 +1,73 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../shared/services/auth/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css']
 })
 export class SigninComponent {
 
-  email = '';
-  password = '';
-
-  errorMessage = '';
+  signinForm: FormGroup;
   loading = false;
+  errorMessage = '';
 
   constructor(
     private authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.signinForm = this.fb.group({
+      lastName: ['', [Validators.required]],
+      firstName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required]]
+    });
+  }
 
-  onSubmit(form: any) {
-    if (form.invalid) return;
+  submit() {
+    if (this.signinForm.invalid) {
+      this.signinForm.markAllAsTouched();
+      return;
+    }
 
-    this.errorMessage = '';
     this.loading = true;
+    this.errorMessage = '';
 
-    this.authService.login(this.email, this.password).subscribe({
+    const { email, password } = this.signinForm.value;
+    this.authService.signUp(email, password).subscribe({
       next: (cred) => {
         this.loading = false;
 
-        if (!cred.user.emailVerified) {
-          this.errorMessage = "Votre email n'est pas vérifié. Consultez votre boîte mail.";
-          return;
-        }
-
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/login']);
       },
       error: (err) => {
         this.loading = false;
-        this.errorMessage = err.message;
+        console.log(err.message);
+        this.errorMessage = "Impossible de créer votre compte.";
       }
     });
   }
+
+  get firstName() {
+    return this.signinForm.controls['firstName'];
+  }
+
+  get lastName() {
+    return this.signinForm.controls['lastName'];
+  }
+
+  get mail() {
+    return this.signinForm.controls['email'];
+  }
+
+  get pwd() {
+    return this.signinForm.controls['password'];
+  }
+
 }

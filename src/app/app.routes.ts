@@ -10,7 +10,8 @@ const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 export const routes: Routes = [
     {
         path: "",
-        component: DashboardComponent
+        redirectTo: "/dashboard",
+        pathMatch: 'full'
     },
     {
         path: "signin",
@@ -24,5 +25,9 @@ export const routes: Routes = [
         path:"dashboard",
         component: DashboardComponent,
         ...canActivate(redirectUnauthorizedToLogin)
+    },
+    {
+        path: '**',
+        redirectTo: '/dashboard'
     }
 ];

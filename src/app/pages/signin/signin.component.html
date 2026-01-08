@@ -1,39 +1,124 @@
-<div class="login-container">
+<div class="h-screen w-full flex overflow-hidden">
 
-  <h2>Connexion</h2>
+  <div class="hidden lg:flex w-1/2 bg-gray-50 relative p-12">
 
-  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+    <div class="absolute top-4 left-12 max-w-lg">
+      <h1 class="text-4xl font-bold text-blue-600 leading-tight">
+        Tradez. Suivez. Analysez.
+      </h1>
 
-  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+      <p class="text-gray-600 mt-2 text-sm leading-relaxed">
+        CoinVerse vous aide à gérer vos cryptos, comparer les marchés et
+        détecter les opportunités en temps réel.
+      </p>
 
-    <label>Email</label>
-    <input
-      type="email"
-      name="email"
-      [(ngModel)]="email"
-      required
-      email
-      class="input"
+      <div class="flex flex-wrap gap-3 mt-2">
+        <span class="px-4 py-2 bg-blue-100 shadow-sm rounded-full text-sm border">
+          Prix en direct
+        </span>
+        <span class="px-4 py-2 bg-blue-100 shadow-sm rounded-full text-sm border">
+          Alertes personnalisées
+        </span>
+        <span class="px-4 py-2 bg-blue-100 shadow-sm rounded-full text-sm border">
+          Watchlists multi-actifs
+        </span>
+      </div>
+    </div>
+
+    <img
+      src="assets/images/background.png"
+      alt="Crypto Illustration"
+      class="w-full max-w-xl mx-auto object-contain"
     />
+  </div>
 
-    <label>Mot de passe</label>
-    <input
-      type="password"
-      name="password"
-      [(ngModel)]="password"
-      required
-      class="input"
-    />
+  <div class="w-full lg:w-1/2 flex flex-col items-center justify-center px-8">
 
-    <button type="submit" [disabled]="f.invalid || loading" class="btn">
-      {{ loading ? "Connexion..." : "Se connecter" }}
-    </button>
-  </form>
+    <div class="max-w-sm w-full">
 
-  <div class="links">
-    <a routerLink="/signup">Créer un compte</a>
-    <br />
-    <a routerLink="/forgot-password">Mot de passe oublié ?</a>
+      <div class="flex flex-col items-center mb-8">
+        <img src="assets/logo/logo-coinverse.png" alt="CoinVerse" class="h-10 mb-3">
+        <h1 class="text-2xl font-bold">Inscription</h1>
+        <p class="text-sm text-gray-500 mt-1">Rejoignez-nous</p>
+      </div>
+
+      <form [formGroup]="signinForm" (ngSubmit)="submit()" class="space-y-4">
+
+        <div class="flex gap-2">
+          <div class="flex-1 flex flex-col">
+            <label class="font-medium mb-1">Nom</label>
+            <input type="text" formControlName="lastName" placeholder="Doe"
+                   class="border rounded-lg px-4 py-2 w-full text-sm focus:ring focus:ring-blue-300 focus:outline-none"
+                   [class.border-red-500]="lastName.touched && lastName.invalid" />
+            <p *ngIf="lastName.touched && lastName.hasError('required')" class="text-red-500 text-xs mt-1">
+              Le nom est requis.
+            </p>
+          </div>
+          <div class="flex-1 flex flex-col">
+            <label class="font-medium mb-1">Prénom</label>
+            <input type="text" formControlName="firstName" placeholder="John"
+                   class="border rounded-lg px-4 py-2 w-full text-sm focus:ring focus:ring-blue-300 focus:outline-none"
+                   [class.border-red-500]="firstName.touched && firstName.invalid" />
+            <p *ngIf="firstName.touched && firstName.hasError('required')" class="text-red-500 text-xs mt-1">
+              Le prénom est requis.
+            </p>
+          </div>
+        </div>
+
+        <div class="flex flex-col">
+            <label class="font-medium mb-1">Email</label>
+
+            <input
+            type="email"
+            formControlName="email"
+            placeholder="exemple@gmail.com"
+            class="border rounded-lg px-4 py-2 w-full text-sm focus:ring focus:ring-blue-300 focus:outline-none"
+            [class.border-red-500]="mail.touched && mail.invalid"
+            />
+
+            <p *ngIf="mail.touched && mail.hasError('required')" class="text-red-500 text-xs mt-1">
+            L'email est requis.
+            </p>
+            <p *ngIf="mail.touched && mail.hasError('email')" class="text-red-500 text-xs mt-1">
+            Format email invalide.
+            </p>
+        </div>
+
+        <div class="flex flex-col">
+            <label class="font-medium mb-1">Mot de passe</label>
+
+            <input
+            type="password"
+            formControlName="password"
+            placeholder="Entrez votre mot de passe"
+            class="border rounded-lg px-4 py-2 w-full text-sm focus:ring focus:ring-blue-300 focus:outline-none"
+            [class.border-red-500]="pwd.touched && pwd.invalid"
+            />
+
+            <p *ngIf="pwd.touched && pwd.hasError('required')" class="text-red-500 text-xs mt-1">
+            Le mot de passe est requis.
+            </p>
+        </div>
+
+        <p *ngIf="errorMessage" class="text-red-600 text-sm text-center">
+            {{ errorMessage }}
+        </p>
+
+        <button
+            type="submit"
+            [disabled]="loading"
+            class="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-3 font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+            {{ loading ? 'Création...' : 'Créer votre compte' }}
+        </button>
+        </form>
+
+      <p class="text-sm text-gray-500 mt-4 text-center">
+        Avez-vous un compte ? <a class="text-blue-500 hover:underline cursor-pointer" [routerLink]="['/login']">Connectez-vous</a>
+      </p>
+
+    </div>
+
   </div>
 
 </div>
