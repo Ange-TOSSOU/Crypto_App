@@ -40,4 +40,29 @@ export class CryptoApiService {
       })
     );
   }
+  getPriceHistory(
+  coinId: string,
+  days: number): Observable<{ date: Date; price: number }[]> {
+
+  const params = {
+    vs_currency: 'usd',
+    days: days.toString()
+  };
+
+  return this.http.get<any>(
+    `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart`,
+    { params }
+  ).pipe(
+    map(response =>
+      response.prices.map((p: [number, number]) => ({
+        date: new Date(p[0]),
+        price: p[1]
+      }))
+    ),
+    catchError(error => {
+      console.error('Erreur historique prix :', error);
+      return throwError(() => error);
+    })
+  );
+}
 }
