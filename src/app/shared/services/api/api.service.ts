@@ -79,4 +79,22 @@ export class CryptoApiService {
       })
     );
   }
+  getCryptoDetails(coinId: string): Observable<any> {
+  return this.http.get<any>(`https://api.coingecko.com/api/v3/coins/${coinId}`).pipe(
+    map(response => ({
+      id: response.id,
+      name: response.name,
+      symbol: response.symbol.toUpperCase(),
+      logo: response.image?.large || '',
+      currentPrice: response.market_data?.current_price?.usd || 0
+     
+    })),
+    catchError(err => {
+      console.error('can not get details :', err);
+      return throwError(() => err);
+    })
+  );
+}
+
+
 }
