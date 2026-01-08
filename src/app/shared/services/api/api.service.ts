@@ -7,16 +7,14 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 })
 export class CryptoApiService {
 
-  // CORRECTION : On garde juste l'URL de base, sans les paramètres '?'
   private baseUrl = 'https://api.coingecko.com/api/v3/coins/markets';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  // J'ajoute des arguments pour rendre la méthode flexible (page, limit)
   getCryptos(page: number = 1, limit: number = 20): Observable<any[]> {
 
     const params: any = {
-      vs_currency: 'usd',
+      vs_currency: 'eur',
       order: 'market_cap_desc',
       per_page: limit,  // Utilise l'argument
       page: page,       // Utilise l'argument
@@ -38,6 +36,45 @@ export class CryptoApiService {
       }))),
       catchError(error => {
         console.error('Erreur API :', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  getPriceHistory(
+    coinId: string,
+    days: number | string): Observable<{ date: Date; price: number }[]> {
+
+    const params = {
+      vs_currency: 'eur',
+      days: days.toString()
+    };
+
+    return this.http.get<any>(
+      `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart`,
+      { params }
+    ).pipe(
+      map(response =>
+        response.prices.map((p: [number, number]) => ({
+          date: new Date(p[0]),
+          price: p[1]
+        }))
+      ),
+      catchError(error => {
+        console.error('Erreur historique prix :', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  //pour pouvoir afficher l'historique avec des bougies
+  getCryptoOHLC(coinId: string, days: string): Observable<any[]> {
+    // days peut être '1', '7', '14', '30', '90', '180', '365'
+    const url = `https://api.coingecko.com/api/v3/coins/${coinId}/ohlc?vs_currency=usd&days=${days}`;
+
+    return this.http.get<any[]>(url).pipe(
+      catchError(error => {
+        console.error('Erreur OHLC :', error);
         return throwError(() => error);
       })
     );

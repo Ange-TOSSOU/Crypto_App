@@ -1,31 +1,39 @@
-<div class="bg-white">
-    <span>TOP Cryptos</span>
-    <table class="w-3/4">
+<div class="bg-white w-full px-8 py-2 gap-3 flex flex-col">
+    <span class="font-bold">TOP 5 Cryptos</span>
+    <table class="w-full">
         <thead>
-            <tr>
-                <th>CRYPTO</th>
-                <th>PRIX(EURO)</th>
+            <tr style="color: #CCCCCC;">
+                <th class="text-left">CRYPTO</th>
+                <th></th>
+                <th>PRIX (EUR)</th>
                 <th>24H</th>
-                <th>CAPITALISATION(EUR)</th>
-                <th>VOLUME(24H)</th>
+                <th>CAP (EUR)</th>
+                <th>VOLUME (24H)</th>
                 <th>7J</th>
             </tr>
         </thead>
         <tbody>
             <ng-container *ngFor="let item of cryptos">
-                <tr>
-                    <td> {{item.name}}</td>
-                    <td> {{item.price | number:'1.0-2'}}</td>
-                    <td> {{item.change24h  | number:'1.2-2' }}</td>
-                    <td> {{item.marketCap | shortNumber}} </td>
-                    <td> {{item.volume | shortNumber}} </td>
+                <tr style="border-bottom: 1px solid #CCCCCC;">
+                    <td class="flex items-center gap-2"> <img [src]="item.logo" [alt]="item.logo" width="25" height="25"> <span style="font-weight: 500;">{{item.name}}</span>
+                    </td>
+                    <td style="color: #CCCCCC; font-weight:500" class="text-center">
+                        {{item.symbol}}
+                    </td>
+                    <td class="text-center"> {{item.price | number:'1.0-2'}}</td>
+                    <td [style.color]="item.change24h >= 0 ? '#16D496' : '#FF6B6B'" class="flex justify-center"> 
+                        <span>{{ item.change24h >= 0 ? '+' : '' }}</span>
+                        <span> {{item.change24h | number:'1.2-2' }} %</span>
+                    </td>
+                    <td class="text-center"> {{item.marketCap | shortNumber}} </td>
+                    <td class="text-center"> {{item.volume | shortNumber}} </td>
                     <!-- <td> {{item.change7d}} </td> -->
-                    <td *ngIf="item.change7d > 0">Up</td>
-                    <td *ngIf="item.change7d < 0">Down</td>
+                    <td class="text-center" *ngIf="item.change7d > 0">📈</td>
+                    <td class="text-center" *ngIf="item.change7d < 0">📉</td>
                 </tr>
             </ng-container>
         </tbody>
-            
+
     </table>
-    
+
 </div>
