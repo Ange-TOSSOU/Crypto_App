@@ -5,7 +5,7 @@ import { CurrencyPipe} from '@angular/common';
 
 @Component({
   selector: 'app-crypto-card',
-  imports: [CommonModule, NgOptimizedImage, CurrencyPipe],
+  imports: [CommonModule, CurrencyPipe],
   templateUrl: './crypto-card.component.html',
   styleUrl: './crypto-card.component.css'
 })
