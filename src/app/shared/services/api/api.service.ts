@@ -7,12 +7,10 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 })
 export class CryptoApiService {
 
-  // CORRECTION : On garde juste l'URL de base, sans les paramètres '?'
   private baseUrl = 'https://api.coingecko.com/api/v3/coins/markets';
 
   constructor(private http: HttpClient) {}
 
-  // J'ajoute des arguments pour rendre la méthode flexible (page, limit)
   getCryptos(page: number = 1, limit: number = 20): Observable<any[]> {
 
     const params: any = {
