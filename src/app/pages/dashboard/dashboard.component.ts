@@ -14,12 +14,44 @@ import { CryptoApiService } from '../../shared/services/api/api.service';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
-  public historyData: number[][] = [];
+  historyData: number[][] = [];
+  cryptosTrending: any;
+
+  // Périodes disponibles
+  public timePeriods = [
+    { label: '24H', value: '1' },      // Bougies de 30 min
+    { label: '7J', value: '7' },       // Bougies de 4h
+    { label: '30J', value: '30' },     // Bougies de 4h
+    { label: '3M', value: '90' },  // Bougies de 4 jours
+    { label: '1AN', value: '365' },   // Bougies de 4 jours
+  ];
+
+  public activePeriod: string = '30';
 
   constructor(private cryptoService: CryptoApiService) { }
 
   ngOnInit(): void {
-    this.loadCryptoHistory(365);
+    this.loadCryptoHistory(this.activePeriod);
+    this.loadTrendingCryptos();
+  }
+
+
+  changePeriod(period: string) {
+    this.activePeriod = period;
+    this.loadCryptoHistory(period);
+  }
+
+  loadTrendingCryptos() {
+    this.cryptoService.getCryptos(1, 10).subscribe({
+      next: (data) => {
+        this.cryptosTrending = data;
+        console.log("Trending: ", this.cryptosTrending);
+      },
+      error: (err) => {
+        console.error("Impossible de charger les cryptos ");
+
+      }
+    })
   }
 
   loadCryptoHistory(period: number | string) {
@@ -33,15 +65,5 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  cryptos: CryptoCard[] = [
-    { id: '1', name: 'Bitcoin', symbol: 'BTC', price: 50000, change24h: 2.5, iconUrl: 'btc.png' },
-    { id: '2', name: 'Solana', symbol: 'SOL', price: 150, change24h: -5.0, iconUrl: 'solana.png' },
-    { id: '3', name: 'Ethereum', symbol: 'ETH', price: 3000, change24h: -5.0, iconUrl: 'eth.png' },
-    { id: '4', name: 'Cardano', symbol: 'ADA', price: 0.8, change24h: 2.5, iconUrl: 'ada.png' },
-    { id: '5', name: 'Binance', symbol: 'BNB', price: 550, change24h: -5.0, iconUrl: 'bnb.png' },
-    // Répétez pour simuler l'effet de défilement continu
-    { id: '6', name: 'Bitcoin', symbol: 'BTC', price: 50000, change24h: 2.5, iconUrl: 'btc.png' },
-    { id: '7', name: 'Solana', symbol: 'SOL', price: 150, change24h: -5.0, iconUrl: 'solana.png' },
-  ];
 
 }

@@ -1,7 +1,7 @@
 <div class="flex items-center gap-7 py-1">
     <div class="flex items-center gap-2">
-        <img ngSrc="assets/icons/bitcoin.png" width="24" height="24" priority>
-        <span class="font-bold"> {{crypto.name}} </span>
+        <img [src]="crypto.logo" width="24" height="24" priority>
+        <span class="font-bold whitespace-nowrap"> {{crypto.name}} </span>
     </div>
 
     <div class="flex items-center gap-1">
