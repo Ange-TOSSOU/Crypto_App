@@ -22,11 +22,11 @@ export class DashboardComponent implements OnInit {
 
   // Périodes disponibles
   timePeriods = [
-    { label: '24H', value: '1', title: "Bougies de 30 minutes"},    
-    { label: '7J', value: '7',title: "Bougies de 4h" },       
-    { label: '30J', value: '30', title: "Bougies de 4h" }, 
+    { label: '24H', value: '1', title: "Bougies de 30 minutes" },
+    { label: '7J', value: '7', title: "Bougies de 4h" },
+    { label: '30J', value: '30', title: "Bougies de 4h" },
     { label: '3M', value: '90', title: "Bougies de 4 jours" },
-    { label: '1AN', value: '365',title: "Bougies de 4 jours" }
+    { label: '1AN', value: '365', title: "Bougies de 4 jours" }
   ];
 
   public activePeriod: string = '30';
@@ -45,12 +45,12 @@ export class DashboardComponent implements OnInit {
     this.loadCryptoHistory(period);
   }
 
-  loadCurrentCryptoDetails(){
+  loadCurrentCryptoDetails() {
     this.cryptoService.getCryptoDetails(this.currentCryptoID).subscribe({
       next: (data) => {
         this.currentCryptoDetails = data;
         console.log("details: ", this.currentCryptoDetails);
-        
+
       }
     })
   }
@@ -79,9 +79,14 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  selectTrendingCrypto(crypto: CryptoInfo){
+  selectTrendingCrypto(crypto: CryptoInfo) {
     console.log(crypto);
     this.currentCryptoID = crypto.id;
     this.loadCurrentCryptoDetails();
+  }
+
+  //Pour obtenir une liste de cryptos infinie pour le scroll infini
+  get infiniteCryptos() {
+    return [...this.cryptosTrending, ...this.cryptosTrending];
   }
 }
