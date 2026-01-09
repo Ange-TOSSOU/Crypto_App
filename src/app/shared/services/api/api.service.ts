@@ -16,8 +16,8 @@ export class CryptoApiService {
     const params: any = {
       vs_currency: 'eur',
       order: 'market_cap_desc',
-      per_page: limit,  // Utilise l'argument
-      page: page,       // Utilise l'argument
+      per_page: limit,
+      page: page,
       sparkline: false,
       price_change_percentage: '1h,24h,7d'
     };
@@ -70,7 +70,7 @@ export class CryptoApiService {
   //pour pouvoir afficher l'historique avec des bougies
   getCryptoOHLC(coinId: string, days: string): Observable<any[]> {
     // days peut être '1', '7', '14', '30', '90', '180', '365'
-    const url = `https://api.coingecko.com/api/v3/coins/${coinId}/ohlc?vs_currency=usd&days=${days}`;
+    const url = `https://api.coingecko.com/api/v3/coins/${coinId}/ohlc?vs_currency=eur&days=${days}`;
 
     return this.http.get<any[]>(url).pipe(
       catchError(error => {
@@ -80,21 +80,21 @@ export class CryptoApiService {
     );
   }
   getCryptoDetails(coinId: string): Observable<any> {
-  return this.http.get<any>(`https://api.coingecko.com/api/v3/coins/${coinId}`).pipe(
-    map(response => ({
-      id: response.id,
-      name: response.name,
-      symbol: response.symbol.toUpperCase(),
-      logo: response.image?.large || '',
-      currentPrice: response.market_data?.current_price?.usd || 0
-     
-    })),
-    catchError(err => {
-      console.error('can not get details :', err);
-      return throwError(() => err);
-    })
-  );
-}
+    return this.http.get<any>(`https://api.coingecko.com/api/v3/coins/${coinId}`).pipe(
+      map(response => ({
+        id: response.id,
+        name: response.name,
+        symbol: response.symbol.toUpperCase(),
+        logo: response.image?.large || '',
+        currentPrice: response.market_data?.current_price?.eur,
+        change24h: response.market_data?.price_change_percentage_24h,
+      })),
+      catchError(err => {
+        console.error('can not get details :', err);
+        return throwError(() => err);
+      })
+    );
+  }
 
 
 }

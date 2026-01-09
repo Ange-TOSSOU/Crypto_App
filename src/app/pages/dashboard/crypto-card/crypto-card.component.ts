@@ -1,6 +1,6 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { CryptoCard } from '../../../shared/models/crypto-card';
+import { CryptoInfo } from '../../../shared/models/crypto-info';
 import { CurrencyPipe} from '@angular/common';
 
 @Component({
@@ -10,6 +10,6 @@ import { CurrencyPipe} from '@angular/common';
   styleUrl: './crypto-card.component.css'
 })
 export class CryptoCardComponent {
-  @Input() crypto!: CryptoCard;
+  @Input() crypto!: CryptoInfo;
   
 }

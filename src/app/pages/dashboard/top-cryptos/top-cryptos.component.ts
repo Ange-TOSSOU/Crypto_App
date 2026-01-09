@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Important pour *ngFor, *ngIf, pipe currency
 import { CryptoApiService } from '../../../shared/services/api/api.service';
-import { CryptoCurrency } from '../../../shared/models/crypto-currency';
+import { CryptoInfo } from '../../../shared/models/crypto-info';
 import { ShortNumberPipe } from '../../../shared/pipes/short-number/short-number.pipe';
 
 @Component({
@@ -13,7 +13,7 @@ import { ShortNumberPipe } from '../../../shared/pipes/short-number/short-number
 })
 export class TopCryptosComponent implements OnInit {
   
-  cryptos: CryptoCurrency[] = [];
+  cryptos: CryptoInfo[] = [];
   
   currentPage: number = 1;
   itemsPerPage: number = 5; 

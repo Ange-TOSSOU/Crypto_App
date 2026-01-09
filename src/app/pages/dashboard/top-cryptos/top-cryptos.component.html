@@ -23,7 +23,7 @@
                     <td class="text-center"> {{item.price | number:'1.0-2'}}</td>
                     <td [style.color]="item.change24h >= 0 ? '#16D496' : '#FF6B6B'" class="flex justify-center"> 
                         <span>{{ item.change24h >= 0 ? '+' : '' }}</span>
-                        <span> {{item.change24h | number:'1.2-2' }} %</span>
+                        <span>{{item.change24h | number:'1.2-2' }} %</span>
                     </td>
                     <td class="text-center"> {{item.marketCap | shortNumber}} </td>
                     <td class="text-center"> {{item.volume | shortNumber}} </td>

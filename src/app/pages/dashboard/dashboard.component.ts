@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { CryptoCardComponent } from "./crypto-card/crypto-card.component";
-import { CryptoCard } from '../../shared/models/crypto-card';
+import { CryptoInfo } from '../../shared/models/crypto-info';
 import { CommonModule } from '@angular/common';
 import { GrapheComponent } from "./graphe/graphe.component";
 import { TopCryptosComponent } from "./top-cryptos/top-cryptos.component";
@@ -14,16 +14,19 @@ import { CryptoApiService } from '../../shared/services/api/api.service';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+
+  currentCryptoID: string = "bitcoin";
+  currentCryptoDetails: any;
   historyData: number[][] = [];
   cryptosTrending: any;
 
   // Périodes disponibles
-  public timePeriods = [
-    { label: '24H', value: '1' },      // Bougies de 30 min
-    { label: '7J', value: '7' },       // Bougies de 4h
-    { label: '30J', value: '30' },     // Bougies de 4h
-    { label: '3M', value: '90' },  // Bougies de 4 jours
-    { label: '1AN', value: '365' },   // Bougies de 4 jours
+  timePeriods = [
+    { label: '24H', value: '1', title: "Bougies de 30 minutes"},    
+    { label: '7J', value: '7',title: "Bougies de 4h" },       
+    { label: '30J', value: '30', title: "Bougies de 4h" }, 
+    { label: '3M', value: '90', title: "Bougies de 4 jours" },
+    { label: '1AN', value: '365',title: "Bougies de 4 jours" }
   ];
 
   public activePeriod: string = '30';
@@ -31,6 +34,7 @@ export class DashboardComponent implements OnInit {
   constructor(private cryptoService: CryptoApiService) { }
 
   ngOnInit(): void {
+    this.loadCurrentCryptoDetails();
     this.loadCryptoHistory(this.activePeriod);
     this.loadTrendingCryptos();
   }
@@ -39,6 +43,16 @@ export class DashboardComponent implements OnInit {
   changePeriod(period: string) {
     this.activePeriod = period;
     this.loadCryptoHistory(period);
+  }
+
+  loadCurrentCryptoDetails(){
+    this.cryptoService.getCryptoDetails(this.currentCryptoID).subscribe({
+      next: (data) => {
+        this.currentCryptoDetails = data;
+        console.log("details: ", this.currentCryptoDetails);
+        
+      }
+    })
   }
 
   loadTrendingCryptos() {
@@ -65,5 +79,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-
+  selectTrendingCrypto(crypto: CryptoInfo){
+    console.log(crypto);
+    this.currentCryptoID = crypto.id;
+    this.loadCurrentCryptoDetails();
+  }
 }
