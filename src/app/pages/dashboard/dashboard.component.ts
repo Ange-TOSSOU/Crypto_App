@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { CryptoCardComponent } from "./crypto-card/crypto-card.component";
-import { CryptoInfo } from '../../shared/models/crypto-info';
+import { CryptoInfo, CryptoToTrade } from '../../shared/models/crypto-info';
 import { CommonModule } from '@angular/common';
 import { GrapheComponent } from "./graphe/graphe.component";
 import { TopCryptosComponent } from "./top-cryptos/top-cryptos.component";
 import { CryptoApiService } from '../../shared/services/api/api.service';
+import { TradeComponent } from "./trade/trade.component";
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, HeaderComponent, CryptoCardComponent, GrapheComponent, TopCryptosComponent],
+  imports: [CommonModule, HeaderComponent, CryptoCardComponent, GrapheComponent, TopCryptosComponent, TradeComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
@@ -17,6 +18,7 @@ export class DashboardComponent implements OnInit {
 
   currentCryptoID: string = "bitcoin";
   currentCryptoDetails: any;
+  cryptoToTradeInfos!: CryptoToTrade;
   historyData: number[][] = [];
   cryptosTrending: any;
 
@@ -50,7 +52,11 @@ export class DashboardComponent implements OnInit {
       next: (data) => {
         this.currentCryptoDetails = data;
         console.log("details: ", this.currentCryptoDetails);
-
+        this.cryptoToTradeInfos = {
+          name: this.currentCryptoDetails.name,
+          symbol: this.currentCryptoDetails.symbol,
+          price: this.currentCryptoDetails.currentPrice
+        }
       }
     })
   }

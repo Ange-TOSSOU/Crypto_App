@@ -1,1 +1,36 @@
-<p>trade works!</p>
+<div class="p-4 gap-3 flex flex-col">
+    <div class="flex w-full">
+        <button class="p-2 w-full rounded-s text-white" [style.backgroundColor]="!isBuying ? '#6EB1F7' : '#CCCCCC'"
+            (click)="setTrading(false)">Acheter</button>
+        <button class="p-2 w-full rounded-e text-white" [style.backgroundColor]="isBuying ? '#6EB1F7' : '#CCCCCC'"
+            (click)="setTrading(true)">Vendre</button>
+
+    </div>
+    <div class="flex flex-col gap-1">
+        <span class="text-[#808080]">Montant</span>
+        <div class="flex gap-2 bg-[#eeeeee] p-2 rounded-xs">
+            <input type="number" class="w-full bg-transparent outline-none" placeholder="0.00"
+                [(ngModel)]="amountCrypto" (ngModelChange)="onCryptoChange()">
+            <span class="font-semibold text-[#696969]"> {{crypto.symbol}} </span>
+        </div>
+    </div>
+    <div class="flex flex-col gap-1">
+        <span class="text-[#808080]">Payer avec</span>
+        <div class="flex gap-2 bg-[#eeeeee] p-2 rounded-xs">
+            <input type="number" class="w-full bg-transparent outline-none" placeholder="0.00" [(ngModel)]="amountFiat"
+                (ngModelChange)="onFiatChange()">
+            <span class="font-semibold text-[#696969]">EUR</span>
+        </div>
+    </div>
+    <div class="flex flex-col gap-1">
+        <div class="flex justify-between text-[#808080]">
+            <span>Taux de charge:</span>
+            <span>1 {{crypto.symbol}} ≈ {{crypto.price | currency: "EUR"}} </span>
+        </div>
+        <div class="flex justify-between ">
+            <span class="font-semibold">Total:</span>
+            <span class="font-semibold"> {{amountFiat | currency: "EUR"}} </span>
+        </div>
+    </div>
+    <button class="p-3 w-full rounded bg-[#6EB1F7] hover:bg-[#308df1] text-white"> {{actionText}} </button>
+</div>

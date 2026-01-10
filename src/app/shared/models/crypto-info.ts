@@ -9,3 +9,9 @@
       marketCap: number;
       volume: number;
     }
+
+  export  interface CryptoToTrade{
+  name: string;
+  symbol: string;
+  price: number;
+}
