@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { GrapheComponent } from "./graphe/graphe.component";
 import { TopCryptosComponent } from "./top-cryptos/top-cryptos.component";
 import { CryptoApiService } from '../../shared/services/api/api.service';
+import { AuthService } from '../../shared/services/auth/auth.service';
 import { TradeComponent } from "./trade/trade.component";
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
 
@@ -17,6 +18,7 @@ import { TradeHistoryComponent } from './trade-history/trade-history.component';
 })
 export class DashboardComponent implements OnInit {
 
+  userEmail: string = 'null';
   currentCryptoID: string = "bitcoin";
   currentCryptoDetails: any;
   cryptoToTradeInfos!: CryptoToTrade;
@@ -71,9 +73,13 @@ export class DashboardComponent implements OnInit {
 
   public activePeriod: string = '30';
 
-  constructor(private cryptoService: CryptoApiService) { }
+  constructor(
+    private cryptoService: CryptoApiService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
+    this.userEmail = this.authService.getUserEmail() || 'null';
     this.loadCurrentCryptoDetails();
     this.loadCryptoHistory(this.activePeriod);
     this.loadTrendingCryptos();
