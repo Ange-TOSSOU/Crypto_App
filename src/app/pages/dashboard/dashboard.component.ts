@@ -8,6 +8,8 @@ import { TopCryptosComponent } from "./top-cryptos/top-cryptos.component";
 import { CryptoApiService } from '../../shared/services/api/api.service';
 import { TradeComponent } from "./trade/trade.component";
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
+import { Firestore } from '@angular/fire/firestore';
+import { FirebasePortfolioRepository } from '../../shared/services/portfolio/portfolio.firebase.repo';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,6 +37,7 @@ export class DashboardComponent implements OnInit {
   //mocks
   trades: TradeItem[] = [
     {
+      userid:'premier',
       id: 1,
       type: 'buy',
       status: 'open',
@@ -46,6 +49,7 @@ export class DashboardComponent implements OnInit {
       icon: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png'
     },
     {
+      userid:'deuxième',
       id: 2,
       type: 'sell',
       status: 'closed',
@@ -57,6 +61,7 @@ export class DashboardComponent implements OnInit {
       icon: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png'
     },
     {
+      userid:'troisième',
       id: 3,
       type: 'buy',
       status: 'open',
@@ -91,6 +96,7 @@ export class DashboardComponent implements OnInit {
         this.currentCryptoDetails = data;
         console.log("details: ", this.currentCryptoDetails);
         this.cryptoToTradeInfos = {
+          userid:this.currentCryptoDetails.userid,    
           name: this.currentCryptoDetails.name,
           symbol: this.currentCryptoDetails.symbol,
           price: this.currentCryptoDetails.currentPrice

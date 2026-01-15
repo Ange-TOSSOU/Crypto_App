@@ -11,6 +11,7 @@
     }
 
   export  interface CryptoToTrade{
+  userid:string;
   name: string;
   symbol: string;
   price: number;
@@ -18,6 +19,7 @@
 
 export interface TradeItem {
   id: number;
+  userid:string;
   type: 'buy' | 'sell'; // Pour gérer la couleur
   status: 'open' | 'closed';
   symbol: string;
