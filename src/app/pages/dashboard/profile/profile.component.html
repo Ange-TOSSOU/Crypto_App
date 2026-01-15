@@ -13,7 +13,7 @@
       <hr class="my-6 border-gray-100">
 
       <form [formGroup]="resetForm" (ngSubmit)="onResetPassword()" class="space-y-4">
-        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Security</h3>
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Sécurité</h3>
         <div>
           <input type="password" formControlName="newPassword" placeholder="Nouveau mot de passe"
             class="w-full px-4 py-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-blue-400 transition-all placeholder-gray-400">
@@ -44,7 +44,7 @@
         </div>
       </div>
 
-      <h3 class="text-lg font-bold text-gray-800 mb-4">Your Assets</h3>
+      <h3 class="text-lg font-bold text-gray-800 mb-4">Vos Actifs</h3>
       
       <div class="space-y-3">
         @for (crypto of portfolio; track crypto.symbol) {

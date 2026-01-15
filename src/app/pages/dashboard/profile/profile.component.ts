@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Auth, updatePassword, signOut, user } from '@angular/fire/auth';
 import { Firestore, doc, getDoc, collection, getDocs } from '@angular/fire/firestore';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { inject } from '@angular/core';
 
@@ -17,7 +17,7 @@ interface CryptoAsset {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
