@@ -92,4 +92,8 @@ export class AuthService {
 
     return decoded.email;
   }
+
+  getcurrentUser(): User | null {
+    return this.firebaseAuth.currentUser;
+  }
 }

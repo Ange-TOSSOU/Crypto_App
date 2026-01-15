@@ -23,10 +23,10 @@ export class SigninComponent {
     private fb: FormBuilder
   ) {
     this.signinForm = this.fb.group({
-      lastName: ['', [Validators.required]],
-      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required, Validators.minLength(1)]],
+      firstName: ['', [Validators.required, Validators.minLength(1)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
+      password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
 
