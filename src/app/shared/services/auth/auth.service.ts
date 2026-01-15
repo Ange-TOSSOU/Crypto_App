@@ -59,6 +59,7 @@ export class AuthService {
   }
 
   logout(): Observable<void> {
+    localStorage.removeItem('token');
     const promise = signOut(this.firebaseAuth).then(() => {
       sessionStorage.clear();
     });
@@ -91,5 +92,9 @@ export class AuthService {
     if (!decoded || !decoded.email) return null;
 
     return decoded.email;
+  }
+
+  getcurrentUser(): User | null {
+    return this.firebaseAuth.currentUser;
   }
 }
