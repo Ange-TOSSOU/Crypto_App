@@ -4,6 +4,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { SigninComponent } from './pages/signin/signin.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AppComponent } from './app.component';
+import { NoAuthGuard } from './shared/services/auth/no-auth-guard';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
@@ -15,10 +16,12 @@ export const routes: Routes = [
     },
     {
         path: "signin",
+        canActivate: [NoAuthGuard],
         component: SigninComponent
     },
     {
         path:"login",
+        canActivate: [NoAuthGuard],
         component: LoginComponent
     },
     {
