@@ -12,7 +12,6 @@ import { FormsModule } from '@angular/forms';
 export class TradeComponent implements OnInit {
   @Input() crypto!: CryptoToTrade;
 
-  isBuying: boolean = true; //false pour acheter et true pour vendre
   showConfirmation: boolean = false;
   isTradeCompleted: boolean = false;
 
@@ -42,28 +41,25 @@ export class TradeComponent implements OnInit {
       this.amountCrypto = null;
   }
 
-  setBuying(buying: boolean) {
-    this.isBuying = buying;
-  }
 
   //Au click du bouton Acheter/Vendre
-  initiateTrade(){
-    if(!this.amountCrypto) return;
+  initiateTrade() {
+    if (!this.amountCrypto) return;
     this.showConfirmation = true;
     this.isTradeCompleted = false;
   }
 
-  confirmTrade(){
+  confirmTrade() {
     this.isTradeCompleted = true;
 
     console.log("click: ", this.isTradeCompleted);
-    
-    setTimeout(() =>{
+
+    setTimeout(() => {
       this.closeAndReset();
     }, 3000)
   }
 
-  private closeAndReset(){
+  private closeAndReset() {
     this.showConfirmation = false;
     this.isTradeCompleted = false;
 
@@ -71,24 +67,17 @@ export class TradeComponent implements OnInit {
     this.amountFiat = null;
   }
 
-  cancelTrade(){
+  cancelTrade() {
     this.showConfirmation = false;
     this.isTradeCompleted = false;
   }
 
-  get actionText() {
-    return this.isBuying ? `Acheter ${this.crypto.name}` : `Vendre ${this.crypto.name}`
-  }
+
 
   useMaxBalance() {
-  if (this.isBuying) {
     // Achat : On met tous les Euros
     this.amountFiat = this.userBalanceEur;
     this.onFiatChange(); // Recalcule la crypto
-  } else {
-    // Vente : On vend toute la Crypto
-    this.amountCrypto = this.userBalanceCrypto;
-    this.onCryptoChange(); // Recalcule les euros
+
   }
-}
 }
