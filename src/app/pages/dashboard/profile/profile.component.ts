@@ -83,7 +83,6 @@ export class ProfileComponent implements OnInit {
   }
 
   onLogout() {
-    localStorage.removeItem('token');
     this.authService.logout();
     
     this.router.navigate(['/login']);

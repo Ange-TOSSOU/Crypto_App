@@ -59,6 +59,7 @@ export class AuthService {
   }
 
   logout(): Observable<void> {
+    localStorage.removeItem('token');
     const promise = signOut(this.firebaseAuth).then(() => {
       sessionStorage.clear();
     });
