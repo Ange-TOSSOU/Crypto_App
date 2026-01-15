@@ -1,21 +1,37 @@
-import { Component } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common'
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; // Nécessaire pour l'input de recherche
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [NgOptimizedImage],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  constructor(private authService: AuthService, private router: Router) { }
+  
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  isSearchOpen: boolean = false;
+  searchQuery: string = '';
 
   logout() {
     console.log("log out");
 
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  openSearch() {
+    this.isSearchOpen = true;
+  }
+
+  closeSearch() {
+    this.isSearchOpen = false;
+    this.searchQuery = ''; 
   }
 }

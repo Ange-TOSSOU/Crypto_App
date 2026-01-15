@@ -5,7 +5,8 @@
 
         <div class="flex w-max items-center animate-marquee py-1">
             <ng-container *ngFor="let item of infiniteCryptos">
-                <div class="flex items-center gap-2 cursor-pointer" [title]="item.name" (click)="selectTrendingCrypto(item)">
+                <div class="flex items-center gap-2 cursor-pointer" [title]="item.name"
+                    (click)="selectTrendingCrypto(item)">
                     <app-crypto-card [crypto]="item"></app-crypto-card>
                     <span class="mr-2 text-gray-300">|</span>
                 </div>
@@ -37,15 +38,18 @@
             </div>
         </div>
         <div class="w-full flex gap-5">
-            <div class="w-3/4 p-3 bg-white" style="border: 1px solid #CCCC;">
-                <app-graphe [chartData]="historyData"></app-graphe>
+            <div class="w-3/4  h-fit gap-2 flex flex-col">
+                <div class="bg-white p-3" style="border: 1px solid #CCCC;">
+                    <app-graphe [chartData]="historyData"></app-graphe>
+                </div>
+                <app-top-cryptos></app-top-cryptos>
             </div>
-            <div class="w-1/4 bg-white" style="border: 1px solid #CCCC;">
+            <div class="w-1/4 bg-white h-fit" style="border: 1px solid #CCCC;">
                 <app-trade [crypto]="cryptoToTradeInfos"></app-trade>
+                <app-trade-history [trades]="trades" ></app-trade-history>
             </div>
         </div>
     </div>
     <div class="px-6 w-3/4">
-        <app-top-cryptos></app-top-cryptos>
     </div>
 </div>

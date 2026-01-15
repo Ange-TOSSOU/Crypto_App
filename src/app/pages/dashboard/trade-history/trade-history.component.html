@@ -1,0 +1,56 @@
+<div class="flex flex-col p-4 gap-3 w-full">
+
+    <div class="flex items-center gap-6 border-b border-gray-200">
+
+        <button (click)="setCurrentTab('active')" class="pb-2 text-sm font-bold transition-colors relative"
+            [class.text-blue-600]="currentTab === 'active'" [class.text-gray-500]="currentTab !== 'active'"
+            [class.border-b-2]="currentTab === 'active'" [class.border-blue-600]="currentTab === 'active'">
+            En cours
+            <span class="ml-1 bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full text-xs">2</span>
+        </button>
+
+        <button (click)="setCurrentTab('history')" class="pb-2 text-sm font-bold transition-colors relative"
+            [class.text-blue-600]="currentTab === 'history'" [class.text-gray-500]="currentTab !== 'history'"
+            [class.border-b-2]="currentTab === 'history'" [class.border-blue-600]="currentTab === 'history'">
+            Terminés
+        </button>
+    </div>
+
+    <div class=" flex flex-col">
+
+        <div *ngIf="filteredTrades.length === 0" class="text-center py-8 text-gray-400">
+            Aucune transaction récente.
+        </div>
+
+        <div *ngFor="let trade of filteredTrades; let last = last" (click)="selectTrade(trade)"
+            class="flex items-center justify-between p-3 hover:bg-gray-50 transition rounded-lg cursor-pointer"
+            [class.border-b]="!last" [class.border-gray-100]="!last" [class.bg-gray-50]="selectedTradeId === trade.id">
+            <div class="flex items-center gap-3">
+                <img [src]="trade.icon" class="w-10 h-10 rounded-full object-cover border border-gray-100">
+
+                <div class="flex flex-col">
+                    <span class="font-bold text-gray-900 text-sm">{{ trade.name }}</span>
+                    <span class="text-xs text-gray-400">
+                        {{ trade.date | date:'dd MMMM, HH:mm' }}
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-end">
+
+                <span class="font-bold text-sm" [class.text-green-600]="trade.type === 'buy'"
+                    [class.text-red-500]="trade.type === 'sell'">
+
+                    {{ trade.type === 'buy' ? '+' : '-' }}
+                    {{ trade.amount }} {{ trade.symbol }}
+                </span>
+
+                <span class="text-xs text-gray-500 font-medium">
+                    {{ trade.totalPrice | currency:'EUR':'symbol':'1.0-0' }}
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+</div>
