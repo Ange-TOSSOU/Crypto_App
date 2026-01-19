@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HeaderComponent } from './header/header.component';
 import { CryptoCardComponent } from "./crypto-card/crypto-card.component";
-import { CryptoInfo, CryptoToTrade, TradeItem } from '../../shared/models/crypto-info';
+import { CryptoInfo, CryptoToTrade } from '../../shared/models/crypto-info';
 import { CommonModule } from '@angular/common';
 import { GrapheComponent } from "./graphe/graphe.component";
 import { TopCryptosComponent } from "./top-cryptos/top-cryptos.component";
@@ -11,6 +11,7 @@ import { TradeComponent } from "./trade/trade.component";
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
 import { Firestore } from '@angular/fire/firestore';
 import { FirebasePortfolioRepository } from '../../shared/services/portfolio/portfolio.firebase.repo';
+import { Trade } from '../../shared/models/trade';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,7 +38,7 @@ export class DashboardComponent implements OnInit {
   ];
 
   //mocks
-  trades: TradeItem[] = [
+  trades: Trade[] = [
     {
       userid:'premier',
       id: 1,

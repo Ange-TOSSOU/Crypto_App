@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TradeItem } from '../../../shared/models/crypto-info';
+import { Trade } from '../../../shared/models/trade';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class TradeHistoryComponent {
 
-  @Input() trades!: TradeItem[];
+  @Input() trades!: Trade[];
   currentTab: 'active' | 'history' = 'active';
   showConfirmation: boolean = false;
   isTradeCompleted: boolean = false;
@@ -33,7 +33,7 @@ export class TradeHistoryComponent {
     this.currentTab = tab;
   }
 
-  selectTrade(trade: TradeItem) {
+  selectTrade(trade: Trade) {
     if (this.currentTab === 'active') {
       this.selectedTradeId = this.selectedTradeId === trade.id ? -1 : trade.id;
       this.amountToSell = null;

@@ -8,8 +8,9 @@ import {
   where
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
-import { TradeItem, CryptoToTrade } from '../../models/crypto-info';
+import { CryptoToTrade } from '../../models/crypto-info';
 import { PortfolioRepository } from './portfolio.repo';
+import { Trade } from '../../models/trade';
 
 @Injectable({
   providedIn: 'root'
@@ -24,16 +25,16 @@ export class FirebasePortfolioRepository extends PortfolioRepository {
     return collection(this.firestore, 'trades');
   }
 
-  getTradesByUser(userId: string): Observable<TradeItem[]> {
+  getTradesByUser(userId: string): Observable<Trade[]> {
     const q = query(
       this.tradesCollection,
       where('userid', '==', userId)
     );
 
-    return collectionData(q, { idField: 'id' }) as Observable<TradeItem[]>;
+    return collectionData(q, { idField: 'id' }) as Observable<Trade[]>;
   }
 
-  async addTrade(trade: TradeItem): Promise<void> {
+  async addTrade(trade: Trade): Promise<void> {
     await addDoc(this.tradesCollection, {
       ...trade,
       date: trade.date
