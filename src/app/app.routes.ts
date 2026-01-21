@@ -3,7 +3,6 @@ import { redirectUnauthorizedTo, canActivate } from '@angular/fire/auth-guard';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { SigninComponent } from './pages/signin/signin.component';
 import { LoginComponent } from './pages/login/login.component';
-import { ProfileComponent } from './pages/dashboard/profile/profile.component';
 import { AppComponent } from './app.component';
 import { NoAuthGuard } from './shared/services/auth/no-auth-guard';
 
@@ -28,11 +27,6 @@ export const routes: Routes = [
     {
         path:"dashboard",
         component: DashboardComponent,
-        // ...canActivate(redirectUnauthorizedToLogin)
-    },
-    {
-        path:"profile",
-        component: ProfileComponent,
         // ...canActivate(redirectUnauthorizedToLogin)
     },
     {

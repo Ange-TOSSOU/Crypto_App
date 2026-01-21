@@ -15,7 +15,7 @@ interface CryptoAsset {
 }
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-profile',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './profile.component.html',
