@@ -9,8 +9,7 @@ import { CryptoApiService } from '../../shared/services/api/api.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { TradeComponent } from "./trade/trade.component";
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
-import { Firestore } from '@angular/fire/firestore';
-import { FirebasePortfolioRepository } from '../../shared/services/portfolio/portfolio.firebase.repo';
+import { TradeService } from '../../shared/services/trade/trade.service';
 import { Trade } from '../../shared/models/trade';
 
 @Component({
@@ -20,6 +19,11 @@ import { Trade } from '../../shared/models/trade';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+  constructor(
+    private cryptoService: CryptoApiService,
+    private authService: AuthService,
+    private tradeService: TradeService
+  ) { }
 
   userEmail: string = 'null';
   currentCryptoID: string = "bitcoin";
@@ -27,7 +31,8 @@ export class DashboardComponent implements OnInit {
   cryptoToTradeInfos!: CryptoToTrade;
   historyData: number[][] = [];
   cryptosTrending: any;
-
+  trades!: Trade[];
+  
   // Périodes disponibles
   timePeriods = [
     { label: '24H', value: '1', title: "Bougies de 30 minutes" },
@@ -36,61 +41,20 @@ export class DashboardComponent implements OnInit {
     { label: '3M', value: '90', title: "Bougies de 4 jours" },
     { label: '1AN', value: '365', title: "Bougies de 4 jours" }
   ];
-
-  //mocks
-  trades: Trade[] = [
-    {
-      userid:'premier',
-      id: 1,
-      type: 'buy',
-      status: 'open',
-      symbol: 'BTC',
-      name: 'Bitcoin',
-      amount: 0.05,
-      totalPrice: 2500,
-      date: new Date(), // Aujourd'hui
-      icon: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png'
-    },
-    {
-      userid:'deuxième',
-      id: 2,
-      type: 'sell',
-      status: 'closed',
-      symbol: 'ETH',
-      name: 'Ethereum',
-      amount: 1.5,
-      totalPrice: 3200,
-      date: new Date(new Date().setDate(new Date().getDate() - 1)), // Hier
-      icon: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png'
-    },
-    {
-      userid:'troisième',
-      id: 3,
-      type: 'buy',
-      status: 'open',
-      symbol: 'SOL',
-      name: 'Solana',
-      amount: 25,
-      totalPrice: 450,
-      date: new Date(new Date().setDate(new Date().getDate() - 3)), // Il y a 3 jours
-      icon: 'https://assets.coingecko.com/coins/images/4128/large/solana.png'
-    }
-  ];
-
-  public activePeriod: string = '30';
-
-  constructor(
-    private cryptoService: CryptoApiService,
-    private authService: AuthService
-  ) { }
-
+  
+  
+  activePeriod: string = '30';
+  
+  
   ngOnInit(): void {
     this.userEmail = this.authService.getUserEmail() || 'null';
     this.loadCurrentCryptoDetails();
     this.loadCryptoHistory(this.activePeriod);
     this.loadTrendingCryptos();
-  }
 
+    console.log("trades: ", this.trades);
+    
+  }
 
   changePeriod(period: string) {
     this.activePeriod = period;

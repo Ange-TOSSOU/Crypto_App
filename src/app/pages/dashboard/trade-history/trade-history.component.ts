@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Trade } from '../../../shared/models/trade';
 import { FormsModule } from '@angular/forms';
+import { CryptoApiService } from '../../../shared/services/api/api.service';
+import { TradeService } from '../../../shared/services/trade/trade.service';
 
 @Component({
   selector: 'app-trade-history',
@@ -12,47 +14,83 @@ import { FormsModule } from '@angular/forms';
 })
 export class TradeHistoryComponent {
 
-  @Input() trades!: Trade[];
+  apiService = inject(CryptoApiService);
+  tradeService = inject(TradeService);
+
   currentTab: 'active' | 'history' = 'active';
   showConfirmation: boolean = false;
   isTradeCompleted: boolean = false;
-
-  selectedTradeId: number = -1;
+  isLoadingPrice: boolean = false;
+  selectedTrade: Trade | null = null;
+  selectedTradeId: string | null = null;
+  selectedTradeCurrentPrice: number | null = null;
   amountToSell: number | null = null;
   percentToSell: number | null = null;
+
+  get trades() {
+    return this.tradeService.trades();
+  }
+
   get filteredTrades() {
     if (this.currentTab === 'active') {
-      return this.trades.filter(trade => trade.status === 'open');
+      return this.tradeService.activeTrades();
     }
     else {
-      return this.trades.filter(trade => trade.status === 'closed');
+      return this.tradeService.historyTrades();
     }
+  }
+
+  get numberOfActiveTrades() {
+    return this.tradeService.activeTrades().length;
   }
 
   setCurrentTab(tab: 'active' | 'history') {
     this.currentTab = tab;
+    this.selectedTradeId = null;
   }
 
   selectTrade(trade: Trade) {
     if (this.currentTab === 'active') {
-      this.selectedTradeId = this.selectedTradeId === trade.id ? -1 : trade.id;
-      this.amountToSell = null;
-      this.percentToSell = null;      
+
+      // 1. Logique d'ouverture/fermeture (Toggle)
+      if (this.selectedTradeId === trade.id) {
+        // Si on clique sur le même, on ferme tout
+        this.selectedTradeId = null;
+        this.selectedTrade = null;
+        this.selectedTradeCurrentPrice = null; // On reset le prix
+      } else {
+        // 2. Si on ouvre un nouveau trade
+        this.selectedTradeId = trade.id;
+        this.selectedTrade = trade;
+        this.amountToSell = null;
+        this.percentToSell = null;
+
+        // 3. ON RÉCUPÈRE LE PRIX EN DIRECT
+        this.isLoadingPrice = true;
+        this.selectedTradeCurrentPrice = null; // Reset avant chargement
+
+        this.apiService.getCryptoDetails(trade.cryptoId).subscribe({
+          next: (data) => {
+            this.selectedTradeCurrentPrice = data.currentPrice;
+            this.isLoadingPrice = false;
+          },
+          error: () => this.isLoadingPrice = false
+        });
+      }
     }
   }
 
   onAmountToSellChange() {
-    const currentTrade = this.trades.find(trade => trade.id === this.selectedTradeId);
 
-    if (!currentTrade) return;
+    if (!this.selectedTrade) return;
 
     if (this.amountToSell !== null && this.amountToSell !== undefined) {
 
-      let calculatedPercent = (this.amountToSell * 100) / currentTrade.amount;
+      let calculatedPercent = (this.amountToSell * 100) / this.selectedTrade.remainingAmount;
 
       if (calculatedPercent > 100) {
         calculatedPercent = 100;
-        this.amountToSell = currentTrade.amount;
+        this.amountToSell = this.selectedTrade.remainingAmount;
       }
 
       this.percentToSell = parseFloat(calculatedPercent.toFixed(2));
@@ -62,36 +100,53 @@ export class TradeHistoryComponent {
     }
   }
 
-  openConfirmation(e: Event){
+  onMaxAmountClick() {
+    if (this.selectedTrade){
+      this.amountToSell = this.selectedTrade.remainingAmount;
+      this.onAmountToSellChange();
+    }
+  }
+
+  openConfirmation(e: Event) {
     e.stopPropagation();
 
-    if(!this.amountToSell || !this.selectedTradeId) return;
+    if (!this.amountToSell || !this.selectedTradeId) return;
 
     this.showConfirmation = true;
     this.isTradeCompleted = false;
   }
 
-  cancelSell(){
+  cancelSell() {
     this.showConfirmation = false;
     this.isTradeCompleted = false;
   }
 
   confirmSell() {
-    if (this.selectedTradeId && this.amountToSell) {
-      //  this.tradeService.sellPosition(this.selectedTradeId, this.amountToSell);
-      console.log("Sell");
+    if (this.selectedTrade && this.selectedTradeId) {
+      this.apiService.getCryptoDetails(this.selectedTrade.cryptoId).subscribe({
+        next: (data) => {
+          const marketPrice = data.currentPrice;
+
+          if (this.amountToSell) {
+            this.tradeService.sellPosition(this.selectedTradeId!, this.amountToSell, marketPrice);
+            console.log("Sell");
+          }
+
+          console.log("Nouveau tableau: ", this.trades);
+        }
+      });
     }
 
     this.isTradeCompleted = true;
 
     setTimeout(() => {
-      this.cancelSell(); 
-      this.selectedTradeId = -1;
-      this.amountToSell = null; 
-      this.percentToSell = null;  
+      this.cancelSell();
+      this.selectedTradeId = null;
+      this.amountToSell = null;
+      this.percentToSell = null;
     }, 3000);
   }
-get currentSelectedTrade() {
+  get currentSelectedTrade() {
     return this.trades.find(t => t.id === this.selectedTradeId);
   }
 }

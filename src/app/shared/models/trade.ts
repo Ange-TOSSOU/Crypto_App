@@ -1,12 +1,13 @@
 export interface Trade {
-  id: number;
-  userid:string;
-  type: 'buy' | 'sell'; // Pour gérer la couleur
-  status: 'open' | 'closed';
-  symbol: string;
+  id: string;
+  cryptoId: string; //bitcoin
   name: string;
-  amount: number;
-  totalPrice: number;   // Combien ça a coûté en €
-  date: Date;           // Date de la transaction
-  icon: string;         // Logo de la crypto
+  symbol: string;
+  icon: string;
+  status: 'open' | 'closed';
+  buyPrice: number;
+  initialAmount: number; //nombre de cryptos achetées
+  remainingAmount: number; //la quantité actuelle restante
+  date: Date;
+  realisedPnl?: number; //Gain
 }

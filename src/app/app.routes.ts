@@ -7,7 +7,7 @@ import { ProfileComponent } from './pages/dashboard/profile/profile.component';
 import { AppComponent } from './app.component';
 import { NoAuthGuard } from './shared/services/auth/no-auth-guard';
 
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
+// const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 export const routes: Routes = [
     {
@@ -17,23 +17,23 @@ export const routes: Routes = [
     },
     {
         path: "signin",
-        canActivate: [NoAuthGuard],
+        // canActivate: [NoAuthGuard],
         component: SigninComponent
     },
     {
         path:"login",
-        canActivate: [NoAuthGuard],
+        // canActivate: [NoAuthGuard],
         component: LoginComponent
     },
     {
         path:"dashboard",
         component: DashboardComponent,
-        ...canActivate(redirectUnauthorizedToLogin)
+        // ...canActivate(redirectUnauthorizedToLogin)
     },
     {
         path:"profile",
         component: ProfileComponent,
-        ...canActivate(redirectUnauthorizedToLogin)
+        // ...canActivate(redirectUnauthorizedToLogin)
     },
     {
         path: '**',
