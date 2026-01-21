@@ -13,13 +13,16 @@ import {
   UserCredential
 } from '@angular/fire/auth';
 import { setPersistence } from 'firebase/auth';
+import { Firestore, doc, setDoc, Timestamp } from '@angular/fire/firestore';
+import { UserDocument } from '../../models/user';
 import { from, switchMap, tap, Observable } from 'rxjs';
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   user$: Observable<User | null>;
-  constructor(private firebaseAuth: Auth) {
+  constructor(private firebaseAuth: Auth, private firestore: Firestore) {
     this.setSessionStoragePersistence();
     this.user$ = user(this.firebaseAuth);
   }
@@ -28,13 +31,23 @@ export class AuthService {
     setPersistence(this.firebaseAuth, browserSessionPersistence);
   }
 
-  signUp(email: string, password: string) {
+  signIn(firstName: string, lastName: string, email: string, password: string) {
     const promise = createUserWithEmailAndPassword(
       this.firebaseAuth,
       email,
       password
     ).then(async (cred) => {
       if (cred.user) {
+        const user: UserDocument = {
+          uid: cred.user.uid,
+          firstName,
+          lastName,
+          email,
+          balance: 10000,
+          createdAt: Timestamp.now()
+        };
+        await setDoc(doc(this.firestore, 'UserDocument', user.uid), user);
+
         await sendEmailVerification(cred.user);
       }
 
@@ -96,5 +109,9 @@ export class AuthService {
 
   getcurrentUser(): User | null {
     return this.firebaseAuth.currentUser;
+  }
+
+  getUid(): string | null {
+    return this.firebaseAuth.currentUser?.uid ?? null;
   }
 }

@@ -39,8 +39,8 @@ export class SigninComponent {
     this.loading = true;
     this.errorMessage = '';
 
-    const { email, password } = this.signinForm.value;
-    this.authService.signUp(email, password).subscribe({
+    const { firstName, lastName, email, password } = this.signinForm.value;
+    this.authService.signIn(firstName, lastName, email, password).subscribe({
       next: (cred) => {
         this.loading = false;
 

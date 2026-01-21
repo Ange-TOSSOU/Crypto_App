@@ -5,7 +5,9 @@ import { Auth, updatePassword, signOut, user } from '@angular/fire/auth';
 import { Firestore, doc, getDoc, collection, getDocs } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
+import { UserService } from '../../../shared/services/user/user.service';
 import { inject } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 
 interface CryptoAsset {
   name: string;
@@ -31,6 +33,7 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private userService: UserService,
     private router: Router,
     private fb: FormBuilder
   ) {
@@ -42,8 +45,9 @@ export class ProfileComponent implements OnInit {
 
   async ngOnInit() {
     if (this.authService.isAuthenticated()) {
+      const userDoc = await firstValueFrom(this.userService.getUser(this.authService.getUid() || ''));
       this.userData = {
-        displayName: 'Investor',
+        displayName: `${userDoc.firstName} ${userDoc.lastName}`,
         email: this.authService.getUserEmail() || 'null'
       };
       await this.loadPortfolio('currentUser.uid');
