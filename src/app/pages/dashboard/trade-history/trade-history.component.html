@@ -58,75 +58,124 @@
                 </div>
             </div>
             <ng-container *ngIf="selectedTradeId === trade.id">
-                <div class="flex flex-col gap-3 mt-2 border-t border-gray-100 pt-3">
-                    <div class="grid grid-cols-3 gap-2 text-sm">
+                <div class="flex flex-col gap-3 mt-2 border-t border-gray-100 pt-3 animation-fade-in">
 
-                        <div class="bg-gray-50 p-2 rounded flex flex-col justify-center">
-                            <span class="text-[10px] uppercase tracking-wide text-gray-500">Prix Achat</span>
-                            <span class="font-medium text-gray-700">
-                                {{ trade.buyPrice | currency:'EUR':'symbol':'1.2-2' }}
-                            </span>
-                        </div>
+                    <ng-container *ngIf="currentTab === 'active'">
+                        <div class="grid grid-cols-3 gap-2 text-sm">
+                            <div class="bg-gray-50 p-2 rounded flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[10px] uppercase tracking-wide text-gray-500 block">Prix
+                                        Unitaire</span>
+                                    <span class="font-medium text-gray-700">{{ trade.buyPrice |
+                                        currency:'EUR':'symbol':'1.2-2' }}</span>
+                                </div>
+                                <div class="w-full border-t border-gray-200 my-1"></div>
+                                <div>
+                                    <span class="text-[10px] uppercase tracking-wide text-gray-500 block">Total
+                                        Investi</span>
+                                    <span class="font-bold text-gray-800">{{ (trade.buyPrice * trade.remainingAmount) |
+                                        currency:'EUR':'symbol':'1.2-2' }}</span>
+                                </div>
+                            </div>
 
-                        <div class="bg-blue-50/50 p-2 rounded flex flex-col justify-center border border-blue-100">
-                            <span class="text-[10px] uppercase tracking-wide text-blue-500">Prix Actuel</span>
-
-                            <span *ngIf="isLoadingPrice" class="text-xs text-blue-300 animate-pulse">...</span>
-
-                            <span *ngIf="!isLoadingPrice && selectedTradeCurrentPrice" class="font-bold text-blue-700">
-                                {{ selectedTradeCurrentPrice | currency:'EUR':'symbol':'1.2-2' }}
-                            </span>
-
-                            <span *ngIf="!isLoadingPrice && !selectedTradeCurrentPrice" class="text-xs text-gray-400">
-                                --
-                            </span>
-                        </div>
-
-                        <div class="bg-gray-50 p-2 rounded flex flex-col justify-center relative overflow-hidden">
-                            <span class="text-[10px] uppercase tracking-wide text-gray-500">P&L Latent</span>
-
-                            <span *ngIf="isLoadingPrice" class="text-xs text-gray-400 animate-pulse">...</span>
-
-                            <ng-container *ngIf="selectedTradeCurrentPrice && !isLoadingPrice">
-                                <span class="font-bold text-sm"
-                                    [class.text-green-600]="(selectedTradeCurrentPrice - trade.buyPrice) >= 0"
-                                    [class.text-red-500]="(selectedTradeCurrentPrice - trade.buyPrice) < 0">
-
-                                    {{ (selectedTradeCurrentPrice - trade.buyPrice) > 0 ? '+' : '' }}
-                                    {{ (selectedTradeCurrentPrice - trade.buyPrice) * trade.remainingAmount |
-                                    currency:'EUR':'symbol':'1.0-0' }}
+                            <div class="bg-blue-50/50 p-2 rounded flex flex-col justify-center border border-blue-100">
+                                <span class="text-[10px] uppercase tracking-wide text-blue-500">Prix Actuel</span>
+                                <span *ngIf="isLoadingPrice" class="text-xs text-blue-300 animate-pulse">...</span>
+                                <span *ngIf="!isLoadingPrice && selectedTradeCurrentPrice"
+                                    class="font-bold text-blue-700">
+                                    {{ selectedTradeCurrentPrice | currency:'EUR':'symbol':'1.2-2' }}
                                 </span>
+                                <span *ngIf="!isLoadingPrice && !selectedTradeCurrentPrice"
+                                    class="text-xs text-gray-400">--</span>
+                            </div>
 
-                                <span class="text-[10px]"
-                                    [class.text-green-600]="(selectedTradeCurrentPrice - trade.buyPrice) >= 0"
-                                    [class.text-red-500]="(selectedTradeCurrentPrice - trade.buyPrice) < 0">
-                                    {{ ((selectedTradeCurrentPrice - trade.buyPrice) / trade.buyPrice) | percent:'1.2-2'
-                                    }}
+                            <div class="bg-gray-50 p-2 rounded flex flex-col justify-center relative overflow-hidden">
+                                <span class="text-[10px] uppercase tracking-wide text-gray-500">P&L Latent</span>
+                                <span *ngIf="isLoadingPrice" class="text-xs text-gray-400 animate-pulse">...</span>
+                                <ng-container *ngIf="selectedTradeCurrentPrice && !isLoadingPrice">
+                                    <span class="font-bold text-sm"
+                                        [class.text-green-600]="(selectedTradeCurrentPrice - trade.buyPrice) >= 0"
+                                        [class.text-red-500]="(selectedTradeCurrentPrice - trade.buyPrice) < 0">
+                                        {{ (selectedTradeCurrentPrice - trade.buyPrice) > 0 ? '+' : '' }}
+                                        {{ (selectedTradeCurrentPrice - trade.buyPrice) * trade.remainingAmount |
+                                        currency:'EUR':'symbol':'1.2-2' }}
+                                    </span>
+                                    <span class="text-[10px]"
+                                        [class.text-green-600]="(selectedTradeCurrentPrice - trade.buyPrice) >= 0"
+                                        [class.text-red-500]="(selectedTradeCurrentPrice - trade.buyPrice) < 0">
+                                        {{ ((selectedTradeCurrentPrice - trade.buyPrice) / trade.buyPrice) |
+                                        percent:'1.2-2' }}
+                                    </span>
+                                </ng-container>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-end gap-1 w-full" (click)="$event.stopPropagation()">
+                            <button class="text-xs font-bold text-blue-500 hover:text-blue-700 uppercase transition"
+                                (click)="onMaxAmountClick()">MAX</button>
+                            <div class="w-full flex items-center gap-2 bg-white p-2 rounded">
+                                <input type="number" class="w-full border-none outline-none font-medium" [(ngModel)]="amountToSell"
+                                    (ngModelChange)="onAmountToSellChange()" placeholder="0.00">
+                                <span class="font-semibold text-gray-500 text-sm"> {{trade.symbol}} </span>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full bg-[#FF6B6B] text-white p-2 rounded shadow-sm hover:bg-[#ff5252] transition disabled:opacity-50"
+                            [disabled]="!amountToSell || amountToSell <= 0" (click)="openConfirmation($event)">
+                            Vendre {{percentToSell || 0}}% du trade
+                        </button>
+                    </ng-container>
+
+
+                    <ng-container *ngIf="currentTab === 'history'">
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+
+                            <div
+                                class="col-span-2 bg-gray-50 p-3 rounded-lg flex justify-between items-center border border-gray-100">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-500 uppercase tracking-wide">Résultat Net</span>
+                                    <span class="text-lg font-black" [class.text-green-600]="trade.realisedPnl! >= 0"
+                                        [class.text-red-500]="trade.realisedPnl! < 0">
+                                        {{ trade.realisedPnl! > 0 ? '+' : ''}}{{ trade.realisedPnl |
+                                        currency:'EUR':'symbol':'1.2-2' }}
+                                    </span>
+                                </div>
+
+                                <div class="px-3 py-1 rounded-full text-xs font-bold"
+                                    [class.bg-green-100]="trade.realisedPnl! >= 0"
+                                    [class.text-green-700]="trade.realisedPnl! >= 0"
+                                    [class.bg-red-100]="trade.realisedPnl! < 0"
+                                    [class.text-red-700]="trade.realisedPnl! < 0">
+                                    {{ (trade.realisedPnl! / (trade.buyPrice * trade.initialAmount)) |
+                                    percent:'1.2-2' }}
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-100 p-2 rounded flex flex-col">
+                                <span class="text-[10px] text-gray-400 uppercase">Total Investi</span>
+                                <span class="font-medium text-gray-700">
+                                    {{ (trade.buyPrice * trade.initialAmount) | currency:'EUR':'symbol':'1.2-2' }}
                                 </span>
-                            </ng-container>
+                            </div>
+
+                            <div class="bg-white border border-gray-100 p-2 rounded flex flex-col">
+                                <span class="text-[10px] text-gray-400 uppercase">Valeur de Sortie</span>
+                                <span class="font-medium text-gray-700">
+                                    {{ ((trade.buyPrice * trade.initialAmount) + trade.realisedPnl!) |
+                                    currency:'EUR':'symbol':'1.2-2' }}
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="flex flex-col items-end gap-1 w-full" (click)="$event.stopPropagation()">
-                        <button class="text-xs font-bold text-blue-500 hover:text-blue-700 uppercase transition" (click)="onMaxAmountClick()">
-                            MAX</button>
-                        <div class=" w-full flex items-center gap-2 bg-white p-2">
-
-                            <input type="text" class="w-full outline-none rounded-xs" [(ngModel)]="amountToSell"
-                                (ngModelChange)="onAmountToSellChange()">
-
-                            <span class="font-semibold text-[#696969] text-sm">
-                                {{trade.symbol}} </span>
-
+                        <div class="text-center mt-1">
+                            <span class="text-[10px] text-gray-400 italic">
+                                Position clôturée le {{ transformDate(trade.date) | date:'dd MMMM yyyy à HH:mm' }}
+                            </span>
                         </div>
-                    </div>
-                    <button class="w-full bg-[#FF6B6B] text-white p-2 rounded shadow-sm hover:bg-[#ff5252] transition"
-                        (click)="openConfirmation($event)">
-                        Vendre {{percentToSell || 0}}% du trade
-                    </button>
+                    </ng-container>
+
                 </div>
             </ng-container>
-
         </div>
 
     </div>
