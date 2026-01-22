@@ -23,6 +23,7 @@ interface CryptoAsset {
 export class ProfileComponent implements OnInit {
 
   resetForm: FormGroup;
+  updateForm: FormGroup;
   userData = { displayName: 'User', email: '' };
   portfolio: CryptoAsset[] = [];
   totalValue = 0;
@@ -37,6 +38,11 @@ export class ProfileComponent implements OnInit {
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
+
+    this.updateForm = this.fb.group({
+      newLastName: ['', [Validators.required, Validators.minLength(2)]],
+      newFirstName: ['', [Validators.required, Validators.minLength(2)]]
+    });
   }
 
   async ngOnInit() {
@@ -44,7 +50,7 @@ export class ProfileComponent implements OnInit {
       const uid = this.authService.getUid() || '';
 
       this.userData = {
-        displayName: `${await this.userService.getFirstName(uid)} ${await this.userService.getLastName(uid)}`,
+        displayName: ` ${await this.userService.getLastName(uid)} ${await this.userService.getFirstName(uid)}`,
         email: this.authService.getUserEmail() || 'null'
       };
 
@@ -80,6 +86,25 @@ export class ProfileComponent implements OnInit {
         this.resetForm.reset();
       } catch (e) {
         alert('Error. You may need to login again to change password.');
+      }
+    }
+  }
+
+  async onUpdateNames() {
+    if (this.updateForm.valid) {
+      try {
+        this.userService.updateLastName(this.authService.getUid()!, this.updateForm.value.newLastName);
+        this.userService.updateFirstName(this.authService.getUid()!, this.updateForm.value.newFirstName);
+        alert('Names updated!');
+        this.updateForm.reset();
+
+        const uid = this.authService.getUid() || '';
+        this.userData = {
+        displayName: ` ${await this.userService.getLastName(uid)} ${await this.userService.getFirstName(uid)}`,
+        email: this.authService.getUserEmail() || 'null'
+      };
+      } catch (e) {
+        alert('Error. You may need to login again to change your information.');
       }
     }
   }

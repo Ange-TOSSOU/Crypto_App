@@ -1,12 +1,15 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { Firestore, doc, collection, collectionData, runTransaction, Timestamp } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 import { Trade } from '../../models/trade';
+import { UserDocument } from '../../models/user';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TradeService {
 
-  constructor() {
+  constructor(private firestore: Firestore) {
     this.loadTrades();
   }
 
@@ -152,4 +155,66 @@ export class TradeService {
   deleteTrade(tradeId: string) {
     this._trades.update(currentTrades => currentTrades.filter(trade => trade.id !== tradeId));
   }
+
+  getTrades(uid: string): Observable<Trade[]> {
+    return collectionData(
+      collection(this.firestore, 'UserDocument', uid, 'trades'),
+      { idField: 'id' }
+    ) as Observable<Trade[]>;
+  }
+
+  async openTrade(
+    uid: string,
+    trade: Omit<Trade, 'id' | 'status' | 'date' | 'realisedPnl'>
+  ) {
+    const userRef = doc(this.firestore, 'UserDocument', uid);
+    const tradeRef = doc(collection(userRef, 'trades'));
+
+    await runTransaction(this.firestore, async (transaction) => {
+      const userSnap = await transaction.get(userRef);
+      if (!userSnap.exists()) throw new Error('User not found');
+
+      const user = userSnap.data() as UserDocument;
+
+      if (user.balance < trade.initialAmount) {
+        throw new Error('Solde insuffisant');
+      }
+
+      transaction.update(userRef, {
+        balance: user.balance - trade.initialAmount
+      });
+
+      transaction.set(tradeRef, {
+        ...trade,
+        id: tradeRef.id,
+        status: 'open',
+        remainingAmount: trade.initialAmount,
+        date: Date.now(),
+        realisedPnl: 0
+      });
+    });
+  }
+
+  closeTrade(uid: string, tradeId: string, sellPrice: number) {
+    const userRef = doc(this.firestore, 'UserDocument', uid);
+    const tradeRef = doc(this.firestore, 'UserDocument', uid, 'trades', tradeId);
+
+    return runTransaction(this.firestore, async tx => {
+      const trade = (await tx.get(tradeRef)).data() as Trade;
+      const user = (await tx.get(userRef)).data() as UserDocument;
+
+      const pnl = (sellPrice - trade.buyPrice) * trade.remainingAmount / trade.buyPrice;
+
+      tx.update(tradeRef, {
+        status: 'closed',
+        remainingAmount: 0,
+        realisedPnl: pnl
+      });
+
+      tx.update(userRef, {
+        balance: user.balance + trade.initialAmount + pnl
+      });
+    });
+  }
+
 }
