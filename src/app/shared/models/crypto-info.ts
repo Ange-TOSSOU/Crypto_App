@@ -10,10 +10,12 @@
       volume: number;
     }
 
-  export  interface CryptoToTrade{
-  userid:string;
+export interface CryptoToTrade {
+  cryptoId: string;
   name: string;
   symbol: string;
   price: number;
+  logo: string;
+  currentPrice: number;
+  change24h: number;
 }
-

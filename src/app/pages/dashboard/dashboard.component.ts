@@ -67,10 +67,13 @@ export class DashboardComponent implements OnInit {
         this.currentCryptoDetails = data;
         console.log("details: ", this.currentCryptoDetails);
         this.cryptoToTradeInfos = {
-          userid:this.currentCryptoDetails.userid,    
+          cryptoId:this.currentCryptoDetails.id,    
           name: this.currentCryptoDetails.name,
           symbol: this.currentCryptoDetails.symbol,
-          price: this.currentCryptoDetails.currentPrice
+          price: this.currentCryptoDetails.currentPrice,
+          currentPrice: this.currentCryptoDetails.currentPrice,
+          logo: this.currentCryptoDetails.logo,
+          change24h: this.currentCryptoDetails.change24h
         }
       }
     })

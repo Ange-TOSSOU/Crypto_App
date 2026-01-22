@@ -16,7 +16,7 @@
 
             <div class="flex gap-2 items-center">
                 <span class="text-gray-500 text-xs">
-                    Solde: {{ (userBalanceEur |currency: "EUR") }}
+                    Solde: {{ (userService.currentUser()?.balance|currency: "EUR") }}
                 </span>
                 <button (click)="useMaxBalance()"
                     class="text-xs font-bold text-blue-500 hover:text-blue-700 uppercase transition">

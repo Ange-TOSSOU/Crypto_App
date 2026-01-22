@@ -1,83 +1,114 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { CryptoToTrade } from '../../../shared/models/crypto-info';
+import { Component, Input, OnInit, inject } from '@angular/core'; // ✅ Ajouter inject
+import { CryptoInfo, CryptoToTrade } from '../../../shared/models/crypto-info';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TradeService } from '../../../shared/services/trade/trade.service'; // ✅ Import
+import { UserService } from '../../../shared/services/user/user.service';   // ✅ Import
 
 @Component({
   selector: 'app-trade',
-  imports: [CommonModule, FormsModule, CurrencyPipe],
+  standalone: true, 
+  imports: [CommonModule, FormsModule], 
   templateUrl: './trade.component.html',
   styleUrl: './trade.component.css'
 })
 export class TradeComponent implements OnInit {
   @Input() crypto!: CryptoToTrade;
 
+  private tradeService = inject(TradeService);
+  userService = inject(UserService); 
+
   showConfirmation: boolean = false;
   isTradeCompleted: boolean = false;
+  isLoading: boolean = false;
 
-  userBalanceEur: number = 2500.50; // Il a 2500€
-  userBalanceCrypto: number = 0.45; // Il a 0.45 de la crypto actuelle
-
-  amountCrypto: number | null = null; //La quantité de crypto à trader
-  amountFiat: number | null = null; //La quantité de monnaie à utiliser pour le trade
+  
+  amountCrypto: number | null = null;
+  amountFiat: number | null = null;
 
   ngOnInit(): void {
-    console.log("crypto to trade: ", this.crypto);
   }
+
+  get currentBalance() {
+    return this.userService.currentUser()?.balance || 0;
+  }
+
 
   onCryptoChange() {
     if (this.amountCrypto && this.crypto.price) {
       this.amountFiat = parseFloat((this.amountCrypto * this.crypto.price).toFixed(2));
-    }
-    else
+    } else {
       this.amountFiat = null;
+    }
   }
 
   onFiatChange() {
     if (this.amountFiat && this.crypto.price) {
       this.amountCrypto = parseFloat((this.amountFiat / this.crypto.price).toFixed(6));
-    }
-    else
+    } else {
       this.amountCrypto = null;
+    }
   }
 
+  useMaxBalance() {
+    this.amountFiat = this.currentBalance;
+    this.onFiatChange();
+  }
 
-  //Au click du bouton Acheter/Vendre
+  // --- LOGIQUE DE TRADE ---
+
   initiateTrade() {
-    if (!this.amountCrypto) return;
+    if (!this.amountCrypto || !this.amountFiat) return;
+    
+    if (this.amountFiat > this.currentBalance) {
+      alert("Solde insuffisant !");
+      return;
+    }
+
     this.showConfirmation = true;
     this.isTradeCompleted = false;
   }
 
-  confirmTrade() {
-    this.isTradeCompleted = true;
+  async confirmTrade() {
+    if (!this.amountCrypto || !this.crypto) return;
 
-    console.log("click: ", this.isTradeCompleted);
+    this.isLoading = true; // On bloque le bouton pour éviter le double-clic
 
-    setTimeout(() => {
-      this.closeAndReset();
-    }, 3000)
-  }
+    try {
+      await this.tradeService.openPosition({
+        cryptoId: this.crypto.cryptoId,
+        name: this.crypto.name,
+        symbol: this.crypto.symbol,
+        icon: this.crypto.logo, 
+        buyPrice: this.crypto.price,
+        initialAmount: this.amountCrypto
+      });
 
-  private closeAndReset() {
-    this.showConfirmation = false;
-    this.isTradeCompleted = false;
+      this.isTradeCompleted = true;
 
-    this.amountCrypto = null;
-    this.amountFiat = null;
+      setTimeout(() => {
+        this.closeAndReset();
+      }, 3000);
+
+    } catch (error) {
+      console.error("Erreur trade:", error);
+      alert("Une erreur est survenue lors de la transaction.");
+      this.cancelTrade(); 
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   cancelTrade() {
     this.showConfirmation = false;
     this.isTradeCompleted = false;
+    this.isLoading = false;
   }
 
-
-
-  useMaxBalance() {
-    // Achat : On met tous les Euros
-    this.amountFiat = this.userBalanceEur;
-    this.onFiatChange(); // Recalcule la crypto
-
+  private closeAndReset() {
+    this.showConfirmation = false;
+    this.isTradeCompleted = false;
+    this.amountCrypto = null;
+    this.amountFiat = null;
   }
 }

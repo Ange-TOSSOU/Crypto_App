@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { CryptoApiService } from '../../../shared/services/api/api.service';
 import { TradeService } from '../../../shared/services/trade/trade.service';
 import { UserService } from '../../../shared/services/user/user.service';
+import { Timestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-trade-history',
@@ -45,6 +46,15 @@ export class TradeHistoryComponent {
 
   get numberOfActiveTrades() {
     return this.tradeService.activeTrades().length;
+  }
+
+  transformDate(date: any): Date | null {
+    if (!date) return null;
+    
+    if (date instanceof Timestamp) {
+      return date.toDate();
+    }
+    return new Date(date);
   }
 
   setCurrentTab(tab: 'active' | 'history') {

@@ -78,12 +78,8 @@ export class TradeService implements OnDestroy {
       if (!userSnap.exists()) throw new Error("User not found");
       const userData = userSnap.data() as UserDocument;
 
-      if (userData.balance < totalCost) throw new Error("Solde insuffisant");
-
-      // 1. Débit
       transaction.update(userRef, { balance: userData.balance - totalCost });
 
-      // 2. Création Trade
       const newTrade: Trade = {
         ...tradeInfo,
         id: newTradeRef.id,
