@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, doc, docData, updateDoc } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, getDoc, doc, docData, updateDoc } from '@angular/fire/firestore';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import { UserDocument } from '../../models/user';
 
 @Injectable({
@@ -12,6 +12,21 @@ export class UserService {
 
   getUser(uid: string): Observable<UserDocument> {
     return docData(doc(this.firestore, 'UserDocument', uid)) as Observable<UserDocument>;
+  }
+
+  async getFirstName(uid: string): Promise<string> {
+    const userDoc = await firstValueFrom(this.getUser(uid));
+    return `${userDoc.firstName}`;
+  }
+
+  async getLastName(uid: string): Promise<string> {
+    const userDoc = await firstValueFrom(this.getUser(uid));
+    return `${userDoc.lastName}`;
+  }
+
+  async getBalance(uid: string): Promise<number> {
+    const userDoc = await firstValueFrom(this.getUser(uid));
+    return userDoc.balance;
   }
 
   updateFirstName(uid: string, firstName: number) {

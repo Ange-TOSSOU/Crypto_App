@@ -1,13 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Auth, updatePassword, signOut, user } from '@angular/fire/auth';
-import { Firestore, doc, getDoc, collection, getDocs } from '@angular/fire/firestore';
+import { updatePassword } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { UserService } from '../../../shared/services/user/user.service';
-import { inject } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
 
 interface CryptoAsset {
   name: string;
@@ -24,7 +21,6 @@ interface CryptoAsset {
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  private firestore = inject(Firestore);
 
   resetForm: FormGroup;
   userData = { displayName: 'User', email: '' };
@@ -45,11 +41,13 @@ export class ProfileComponent implements OnInit {
 
   async ngOnInit() {
     if (this.authService.isAuthenticated()) {
-      const userDoc = await firstValueFrom(this.userService.getUser(this.authService.getUid() || ''));
+      const uid = this.authService.getUid() || '';
+
       this.userData = {
-        displayName: `${userDoc.firstName} ${userDoc.lastName}`,
+        displayName: `${await this.userService.getFirstName(uid)} ${await this.userService.getLastName(uid)}`,
         email: this.authService.getUserEmail() || 'null'
       };
+
       await this.loadPortfolio('currentUser.uid');
     }
   }
@@ -65,7 +63,7 @@ export class ProfileComponent implements OnInit {
     this.calculateTotal();
   }
 
-  calculateTotal() {
+  async calculateTotal() {
     this.totalValue = this.portfolio.reduce((acc, curr) => acc + (curr.amount * curr.currentPrice), 0);
   }
 
