@@ -7,7 +7,6 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 })
 export class CryptoApiService {
 
-  private baseUrl = 'https://api.coingecko.com/api/v3/coins/markets';
 
   constructor(private http: HttpClient) { }
 
@@ -22,7 +21,7 @@ export class CryptoApiService {
       price_change_percentage: '1h,24h,7d'
     };
 
-    return this.http.get<any[]>(this.baseUrl, { params }).pipe(
+    return this.http.get<any[]>("https://api.coingecko.com/api/v3/coins/markets", { params }).pipe(
       map(data => data.map(item => ({
         id: item.id,
         name: item.name,
@@ -96,5 +95,8 @@ export class CryptoApiService {
     );
   }
 
+  searchCryptos(query: string) {
+  return this.http.get<any>(`https://api.coingecko.com/api/v3/search?query=${query}`);
+}
 
 }
