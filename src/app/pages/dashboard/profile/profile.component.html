@@ -3,16 +3,16 @@
     
     <div class="w-full md:w-1/3 bg-white p-8 border-b md:border-b-0 md:border-r border-gray-100">
       <div class="flex flex-col items-center text-center mb-8">
-        <div class="w-24 h-24 bg-gradient-to-tr from-purple-500 to-blue-500 rounded-full p-1 mb-4">
+        <div class="w-24 h-24 bg-linear-to-tr from-purple-500 to-blue-500 rounded-full p-1 mb-4">
           <img src="https://ui-avatars.com/api/?name=John+Doe&background=fff" alt="Avatar" class="rounded-full border-4 border-white">
         </div>
-        <h2 class="text-2xl font-bold text-gray-800">{{ userData.displayName }}</h2>
-        <p class="text-gray-400 text-sm">{{ userData.email }}</p>
+        <h2 class="text-2xl font-bold text-gray-800">{{ userService.currentUser()?.lastName }} {{userService.currentUser()?.firstName}}</h2>
+        <p class="text-gray-400 text-sm">{{ userService.currentUser()?.email }}</p>
       </div>
 
       <hr class="my-6 border-gray-100">
 
-      <form [formGroup]="updateForm" (ngSubmit)="onUpdateNames()" class="space-y-4">
+      <form [formGroup]="updateForm" (ngSubmit)="onUpdateNames()" class="space-y-4 mb-4">
         <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Information personnelle</h3>
         <div>
           <input type="text" formControlName="newLastName" placeholder="Nom"
@@ -24,7 +24,7 @@
         </div>
         <button type="submit" [disabled]="updateForm.invalid"
           class="w-full py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-100">
-          Mettre à jour vos informations personnelles
+          Mettre à jour
         </button>
       </form>
 

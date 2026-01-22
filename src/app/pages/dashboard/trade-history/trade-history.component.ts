@@ -4,6 +4,7 @@ import { Trade } from '../../../shared/models/trade';
 import { FormsModule } from '@angular/forms';
 import { CryptoApiService } from '../../../shared/services/api/api.service';
 import { TradeService } from '../../../shared/services/trade/trade.service';
+import { UserService } from '../../../shared/services/user/user.service';
 
 @Component({
   selector: 'app-trade-history',
@@ -16,6 +17,8 @@ export class TradeHistoryComponent {
 
   apiService = inject(CryptoApiService);
   tradeService = inject(TradeService);
+  userService = inject(UserService);
+
 
   currentTab: 'active' | 'history' = 'active';
   showConfirmation: boolean = false;
@@ -67,7 +70,7 @@ export class TradeHistoryComponent {
 
         // 3. ON RÉCUPÈRE LE PRIX EN DIRECT
         this.isLoadingPrice = true;
-        this.selectedTradeCurrentPrice = null; // Reset avant chargement
+        this.selectedTradeCurrentPrice = null; 
 
         this.apiService.getCryptoDetails(trade.cryptoId).subscribe({
           next: (data) => {
@@ -101,7 +104,7 @@ export class TradeHistoryComponent {
   }
 
   onMaxAmountClick() {
-    if (this.selectedTrade){
+    if (this.selectedTrade) {
       this.amountToSell = this.selectedTrade.remainingAmount;
       this.onAmountToSellChange();
     }
@@ -121,30 +124,21 @@ export class TradeHistoryComponent {
     this.isTradeCompleted = false;
   }
 
-  confirmSell() {
-    if (this.selectedTrade && this.selectedTradeId) {
-      this.apiService.getCryptoDetails(this.selectedTrade.cryptoId).subscribe({
-        next: (data) => {
-          const marketPrice = data.currentPrice;
-
-          if (this.amountToSell) {
-            this.tradeService.sellPosition(this.selectedTradeId!, this.amountToSell, marketPrice);
-            console.log("Sell");
-          }
-
-          console.log("Nouveau tableau: ", this.trades);
-        }
+confirmSell() {
+    if (this.selectedTradeId && this.amountToSell && this.selectedTradeCurrentPrice) {
+      
+      this.tradeService.sellPosition(
+        this.selectedTradeId, 
+        this.amountToSell, 
+        this.selectedTradeCurrentPrice
+      ).then(() => {
+        console.log("Vente réussie !");
+        this.isTradeCompleted = true;
+        setTimeout(() => this.cancelSell(), 3000);
+      }).catch(err => {
+        console.error("Erreur vente:", err);
       });
     }
-
-    this.isTradeCompleted = true;
-
-    setTimeout(() => {
-      this.cancelSell();
-      this.selectedTradeId = null;
-      this.amountToSell = null;
-      this.percentToSell = null;
-    }, 3000);
   }
   get currentSelectedTrade() {
     return this.trades.find(t => t.id === this.selectedTradeId);

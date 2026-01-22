@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, effect } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { updatePassword } from '@angular/fire/auth';
@@ -22,45 +22,55 @@ interface CryptoAsset {
 })
 export class ProfileComponent implements OnInit {
 
+  // SERVICES (Publics pour être accessibles dans le HTML)
+  public authService = inject(AuthService);
+  public userService = inject(UserService);
+
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+
+  // FORMULAIRES & DONNÉES LOCALES
   resetForm: FormGroup;
   updateForm: FormGroup;
-  userData = { displayName: 'User', email: '' };
+
   portfolio: CryptoAsset[] = [];
   totalValue = 0;
 
-  constructor(
-    private authService: AuthService,
-    private userService: UserService,
-    private router: Router,
-    private fb: FormBuilder
-  ) {
+  constructor() {
     this.resetForm = this.fb.group({
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]]
     }, { validators: this.passwordMatchValidator });
 
+    // 2. Initialisation Update Profile
     this.updateForm = this.fb.group({
       newLastName: ['', [Validators.required, Validators.minLength(2)]],
       newFirstName: ['', [Validators.required, Validators.minLength(2)]]
     });
+
+    // Dès que le signal currentUser change (chargement initial ou mise à jour),
+    // on remplit le formulaire.
+    effect(() => {
+      const user = this.userService.currentUser();
+      if (user) {
+        this.updateForm.patchValue({
+          newLastName: user.lastName,
+          newFirstName: user.firstName
+        }, { emitEvent: false }); // emitEvent: false évite de déclencher des boucles
+      }
+    });
   }
 
   async ngOnInit() {
-    if (this.authService.isAuthenticated()) {
-      const uid = this.authService.getUid() || '';
-
-      this.userData = {
-        displayName: ` ${await this.userService.getLastName(uid)} ${await this.userService.getFirstName(uid)}`,
-        email: this.authService.getUserEmail() || 'null'
-      };
-
-      await this.loadPortfolio('currentUser.uid');
+    const uid = this.userService.currentUserId();
+    if (uid) {
+      await this.loadPortfolio(uid);
     }
   }
 
+
   async loadPortfolio(uid: string) {
-    // Example: Fetching from Firestore collection 'users/[uid]/assets'
-    // For this demo, we use mock data
+    // Mock data (À remplacer par un appel API réel plus tard)
     this.portfolio = [
       { name: 'Bitcoin', symbol: 'BTC', amount: 0.24, currentPrice: 42000 },
       { name: 'Ethereum', symbol: 'ETH', amount: 3.5, currentPrice: 2250 },
@@ -81,11 +91,14 @@ export class ProfileComponent implements OnInit {
   async onResetPassword() {
     if (this.resetForm.valid) {
       try {
-        await updatePassword(this.authService.getcurrentUser()!, this.resetForm.value.newPassword);
-        alert('Password updated!');
-        this.resetForm.reset();
+        const firebaseUser = this.authService.getcurrentUser();
+        if (firebaseUser) {
+          await updatePassword(firebaseUser, this.resetForm.value.newPassword);
+          alert('Mot de passe mis à jour !');
+          this.resetForm.reset();
+        }
       } catch (e) {
-        alert('Error. You may need to login again to change password.');
+        alert('Erreur. Vous devez peut-être vous reconnecter pour changer le mot de passe.');
       }
     }
   }
@@ -93,25 +106,21 @@ export class ProfileComponent implements OnInit {
   async onUpdateNames() {
     if (this.updateForm.valid) {
       try {
-        this.userService.updateLastName(this.authService.getUid()!, this.updateForm.value.newLastName);
-        this.userService.updateFirstName(this.authService.getUid()!, this.updateForm.value.newFirstName);
-        alert('Names updated!');
-        this.updateForm.reset();
+        await this.userService.updateLastName(this.updateForm.value.newLastName);
+        await this.userService.updateFirstName(this.updateForm.value.newFirstName);
 
-        const uid = this.authService.getUid() || '';
-        this.userData = {
-        displayName: ` ${await this.userService.getLastName(uid)} ${await this.userService.getFirstName(uid)}`,
-        email: this.authService.getUserEmail() || 'null'
-      };
+
+        alert('Profil mis à jour avec succès !');
+
       } catch (e) {
-        alert('Error. You may need to login again to change your information.');
+        console.error(e);
+        alert('Erreur lors de la mise à jour des informations.');
       }
     }
   }
 
   onLogout() {
     this.authService.logout();
-    
     this.router.navigate(['/login']);
   }
 }
