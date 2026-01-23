@@ -17,7 +17,7 @@ export class HeaderComponent {
   
   private authService = inject(AuthService);
   private router = inject(Router);
-  private apiService = inject(CryptoApiService); // ✅ Injection API
+  private apiService = inject(CryptoApiService);
 
   // États des modales
   isProfileOpen: boolean = false;
@@ -80,8 +80,10 @@ export class HeaderComponent {
   selectCrypto(cryptoId: string) {
     console.log("Crypto choisie:", cryptoId);
     this.closeSearch();
-    // 👉 À décommenter quand vous aurez créé la page de détail :
-    // this.router.navigate(['/market', cryptoId]); 
+
+    this.router.navigate(['/dashboard'], {
+      queryParams: {crypto: cryptoId}
+    });
   }
 
   // --- GESTION PROFIL ---

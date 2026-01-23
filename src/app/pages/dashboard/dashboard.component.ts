@@ -11,6 +11,8 @@ import { TradeComponent } from "./trade/trade.component";
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
 import { TradeService } from '../../shared/services/trade/trade.service';
 import { Trade } from '../../shared/models/trade';
+// ✅ 1. Import nécessaire pour l'URL
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,14 +21,16 @@ import { Trade } from '../../shared/models/trade';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+  
   constructor(
     private cryptoService: CryptoApiService,
     private authService: AuthService,
-    private tradeService: TradeService
+    private route: ActivatedRoute,
+    private router: Router
   ) { }
 
   userEmail: string = 'null';
-  currentCryptoID: string = "bitcoin";
+  currentCryptoID: string = "bitcoin"; // Valeur par défaut
   currentCryptoDetails: any;
   cryptoToTradeInfos!: CryptoToTrade;
   historyData: number[][] = [];
@@ -42,32 +46,42 @@ export class DashboardComponent implements OnInit {
     { label: '1AN', value: '365', title: "Bougies de 4 jours" }
   ];
   
-  
   activePeriod: string = '30';
-  
   
   ngOnInit(): void {
     this.userEmail = this.authService.getUserEmail() || 'null';
-    this.loadCurrentCryptoDetails();
-    this.loadCryptoHistory(this.activePeriod);
     this.loadTrendingCryptos();
 
-    console.log("trades: ", this.trades);
-    
+    this.route.queryParams.subscribe(params => {
+      
+      // On récupère le paramètre ?crypto=... ou 'bitcoin' si vide
+      const cryptoIdFromUrl = params['crypto'];
+
+      if (cryptoIdFromUrl) {
+        this.currentCryptoID = cryptoIdFromUrl;
+      } else {
+        // Si pas de paramètre, on reste sur Bitcoin
+        this.currentCryptoID = 'bitcoin';
+      }
+
+
+      this.loadCurrentCryptoDetails();
+      this.loadCryptoHistory();
+    });
   }
 
   changePeriod(period: string) {
     this.activePeriod = period;
-    this.loadCryptoHistory(period);
+    this.loadCryptoHistory();
   }
 
   loadCurrentCryptoDetails() {
     this.cryptoService.getCryptoDetails(this.currentCryptoID).subscribe({
       next: (data) => {
         this.currentCryptoDetails = data;
-        console.log("details: ", this.currentCryptoDetails);
+
         this.cryptoToTradeInfos = {
-          cryptoId:this.currentCryptoDetails.id,    
+          cryptoId: this.currentCryptoDetails.id,    
           name: this.currentCryptoDetails.name,
           symbol: this.currentCryptoDetails.symbol,
           price: this.currentCryptoDetails.currentPrice,
@@ -83,17 +97,15 @@ export class DashboardComponent implements OnInit {
     this.cryptoService.getCryptos(1, 10).subscribe({
       next: (data) => {
         this.cryptosTrending = data;
-        console.log("Trending: ", this.cryptosTrending);
       },
       error: (err) => {
         console.error("Impossible de charger les cryptos ");
-
       }
     })
   }
 
-  loadCryptoHistory(period: number | string) {
-    this.cryptoService.getCryptoOHLC('bitcoin', period.toString()).subscribe({
+  loadCryptoHistory() {
+    this.cryptoService.getCryptoOHLC(this.currentCryptoID, this.activePeriod.toString()).subscribe({
       next: (data) => {
         this.historyData = data;
       },
@@ -103,14 +115,21 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // ✅ 4. Mise à jour pour utiliser l'URL aussi
   selectTrendingCrypto(crypto: CryptoInfo) {
-    console.log(crypto);
-    this.currentCryptoID = crypto.id;
-    this.loadCurrentCryptoDetails();
+    // Au lieu de charger manuellement, on change juste l'URL.
+    // Le ngOnInit va détecter le changement et charger les données tout seul.
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { crypto: crypto.id },
+      queryParamsHandling: 'merge' // Garde les autres params s'il y en a
+    });
   }
 
   //Pour obtenir une liste de cryptos infinie pour le scroll infini
   get infiniteCryptos() {
+    // Protection si cryptosTrending n'est pas encore chargé
+    if (!this.cryptosTrending) return [];
     return [...this.cryptosTrending, ...this.cryptosTrending];
   }
 }
