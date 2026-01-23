@@ -23,7 +23,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class DashboardComponent implements OnInit {
   
   constructor(
-    private cryptoService: CryptoApiService,
+    private apiService: CryptoApiService,
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router
@@ -64,7 +64,6 @@ export class DashboardComponent implements OnInit {
         this.currentCryptoID = 'bitcoin';
       }
 
-
       this.loadCurrentCryptoDetails();
       this.loadCryptoHistory();
     });
@@ -76,7 +75,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadCurrentCryptoDetails() {
-    this.cryptoService.getCryptoDetails(this.currentCryptoID).subscribe({
+    this.apiService.getCryptoDetails(this.currentCryptoID).subscribe({
       next: (data) => {
         this.currentCryptoDetails = data;
 
@@ -94,7 +93,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadTrendingCryptos() {
-    this.cryptoService.getCryptos(1, 10).subscribe({
+    this.apiService.getCryptos(1, 10).subscribe({
       next: (data) => {
         this.cryptosTrending = data;
       },
@@ -105,7 +104,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadCryptoHistory() {
-    this.cryptoService.getCryptoOHLC(this.currentCryptoID, this.activePeriod.toString()).subscribe({
+    this.apiService.getCryptoOHLC(this.currentCryptoID, this.activePeriod.toString()).subscribe({
       next: (data) => {
         this.historyData = data;
       },

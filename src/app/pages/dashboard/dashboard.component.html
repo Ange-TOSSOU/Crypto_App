@@ -42,11 +42,11 @@
                 <div class="bg-white p-3" style="border: 1px solid #CCCC;">
                     <app-graphe [chartData]="historyData"></app-graphe>
                 </div>
-                <app-top-cryptos></app-top-cryptos>
+                <app-top-cryptos (selectCrypto)="selectTrendingCrypto($event)"></app-top-cryptos>
             </div>
             <div class="w-1/4 bg-white h-fit" style="border: 1px solid #CCCC;">
                 <app-trade [crypto]="cryptoToTradeInfos"></app-trade>
-                <app-trade-history ></app-trade-history>
+                <app-trade-history></app-trade-history>
             </div>
         </div>
     </div>

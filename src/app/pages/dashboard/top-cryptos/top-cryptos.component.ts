@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Important pour *ngFor, *ngIf, pipe currency
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { CryptoApiService } from '../../../shared/services/api/api.service';
 import { CryptoInfo } from '../../../shared/models/crypto-info';
 import { ShortNumberPipe } from '../../../shared/pipes/short-number/short-number.pipe';
@@ -16,36 +16,27 @@ export class TopCryptosComponent implements OnInit {
   cryptos: CryptoInfo[] = [];
   
   currentPage: number = 1;
-  itemsPerPage: number = 5; 
+  itemsPerPage: number = 50; 
+
+  // ✅ Événement pour prévenir le Dashboard quand on clique sur une ligne
+  @Output() selectCrypto = new EventEmitter<CryptoInfo>();
 
   constructor(private cryptoService: CryptoApiService) {}
 
   ngOnInit(): void {
     this.loadCryptos();
-    console.log(this.cryptos);
   }
 
   loadCryptos(): void {
     this.cryptoService.getCryptos(this.currentPage, this.itemsPerPage).subscribe({
       next: (data) => {
-        console.log('Données reçues :', data);
         this.cryptos = data;
       },
-      error: (err) => {
-        console.error('Erreur lors du chargement des cryptos :', err);
-      }
+      error: (err) => console.error(err)
     });
   }
 
-  nextPage(): void {
-    this.currentPage++;
-    this.loadCryptos();
-  }
-
-  prevPage(): void {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.loadCryptos();
-    }
+  onRowClick(crypto: CryptoInfo) {
+    this.selectCrypto.emit(crypto);
   }
 }
