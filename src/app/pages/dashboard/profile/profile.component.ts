@@ -145,7 +145,6 @@ export class ProfileComponent implements OnInit {
         firstName: this.updateForm.value.newFirstName
       };
       await this.userService.updateProfile(updates);
-      alert('Profil mis à jour avec succès !');
     } catch (e) {
       console.error(e);
       alert('Erreur lors de la mise à jour.');
