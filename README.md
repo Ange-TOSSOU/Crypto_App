@@ -1,7 +1,7 @@
 # Crypto App
 
 A web application designed to analyze cryptocurrencies. This platform centralizes real-time market data and personal portfolio management into a single, interactive space.\
-The Crypto App allows users to monitor the evolution of major cryptocurrencies (like Bitcoin and Ethereum) in real-time and manage their personal electronic portfolios. The goal is to provide a clear, interactive interface to track market trends and evaluate investment performance—either globally or relative to other investors.
+The Crypto App allows users to monitor the evolution of major cryptocurrencies (like Bitcoin and Ethereum) in real-time and manage their personal electronic portfolios. The goal is to provide a clear, interactive interface to track market trends and evaluate investment performance (either globally or relative to other investors).
 
 ## Key Features
 - **User Management** : account creation \& authentication, personalized dashboard.
@@ -37,3 +37,4 @@ Launch the development server:
 ng serve
 ```
 Then, navigate to http://localhost:4200/.
+
