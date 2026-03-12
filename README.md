@@ -1,73 +1,39 @@
-# CryptoApp
+# Crypto App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.17.
+A web application designed to analyze cryptocurrencies. This platform centralizes real-time market data and personal portfolio management into a single, interactive space.\
+The Crypto App allows users to monitor the evolution of major cryptocurrencies (like Bitcoin and Ethereum) in real-time and manage their personal electronic portfolios. The goal is to provide a clear, interactive interface to track market trends and evaluate investment performance—either globally or relative to other investors.
 
-## Launch the project in local
-- First, you need to retrieve the code. Type the following command:
+## Key Features
+- **User Management** : account creation \& authentication, personalized dashboard.
+- **Portfolio Management** : CRUD operations, performance tracking, leaderboard.
+- **Market Analysis** : real-time visualization, search \& filter, trend tracking.
+
+## Tech Stack & API
+- **Frontend**: [Angular](https://angular.dev)
+- **Backend/Database**: [Firebase](https://firebase.google.com) \& [Firestore](https://firebase.google.com/docs/firestore)
+- **Data Source**: [CoinGecko API](https://www.coingecko.com/en/api)
+
+## Setup and Installation
+Follow these steps to get the project running locally.
+1. Prerequisites
+Ensure you have the following installed:
+- **Node.js** (v18 or higher recommended)
+- **Angular CLI** (`npm install -g @angular/cli`)
+
+2. Clone the Repository
 ```bash
-git clone https://github.com/Ange-TOSSOU/Crypto_App.git
+git clone https://github.com/Ange-TOSSOU/crypto.git
+cd crypto
 ```
-- Then, download the dependencies needed:
+
+3. Install Dependencies
 ```bash
-npm run start
+npm install
 ```
-- Finally, start the application in local by using the command:
+
+4. Run the Application
+Launch the development server:
 ```bash
 ng serve
 ```
-
-## Development server
-
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Then, navigate to http://localhost:4200/.
