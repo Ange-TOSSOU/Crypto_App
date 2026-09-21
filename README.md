@@ -36,5 +36,6 @@ Launch the development server:
 ```bash
 ng serve
 ```
-Then, navigate to http://localhost:4200/.
+Then, navigate to http://localhost:4200/. And start playing with the app !
+![Login page](./public/demo_app_login.png "Login page")
 
