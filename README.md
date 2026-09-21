@@ -22,8 +22,8 @@ Ensure you have the following installed:
 
 2. Clone the Repository
 ```bash
-git clone https://github.com/Ange-TOSSOU/crypto.git
-cd crypto
+git clone https://github.com/Ange-TOSSOU/Crypto_App.git
+cd Crypto_App
 ```
 
 3. Install Dependencies
